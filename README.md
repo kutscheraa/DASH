@@ -2,7 +2,6 @@
 **Obsah:**
  1. Setup
  2. Jednoduchá aplikace
- 3. Aplikace s grafem
  4. Prokročilá aplikace
 ## 1. Instalace
 Nainstaluj pomocí commandu globálně nebo do virtuálního prostředí.
