@@ -15,3 +15,5 @@ Z githubu stáhni [app.py](https://github.com/kutscheraa/DASH/blob/main/setup/ap
 
     python app.py
 ## 2. Jednoduchá aplikace
+
+## 3. Pokročilá aplikace
