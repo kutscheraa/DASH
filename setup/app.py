@@ -10,7 +10,8 @@ app = Dash(__name__)
 
 # Definuje layout aplikace
 app.layout = html.Div([
-    html.H1(children='BTC', style={'textAlign':'center'}),
+    html.H1(children='BTC PRICE', style={'textAlign':'center'}),
+    dcc.Dropdown(df.Currency.unique(), 'BTC', id='dropdown-selection'),
     dcc.Graph(id='graph-content')
 ])
 
