@@ -16,4 +16,4 @@ Z githubu stáhni [app.py](https://github.com/kutscheraa/DASH) ve složce setup 
 
     python app.py
 ## 2. Jednoduchá aplikace
-V přechozím kroku jsi spustil jednoduchou app s grafem populace.
+V přechozím kroku jsi spustil jednoduchou app s grafem ceny BTC.
