@@ -12,8 +12,7 @@ Společně s dashem se ti nainstaluje i grafická knihovna plotly.
     pip install dash
     pip install pandas
 ## 1.1. Test aplikace
-Z githubu stáhni [app.py](https://github.com/kutscheraa/DASH) ve složce setup a otestuj instalaci.
+Z githubu stáhni [app.py](https://github.com/kutscheraa/DASH/blob/main/setup/app.py) ve složce setup a otestuj instalaci.
 
     python app.py
 ## 2. Jednoduchá aplikace
-V přechozím kroku jsi spustil jednoduchou app s grafem ceny BTC.
