@@ -3,7 +3,7 @@
  1. Setup
  2. Jednoduchá aplikace
  4. Prokročilá aplikace
-## 1. Instalace
+## 1. Setup
 Nainstaluj pomocí commandu globálně nebo do virtuálního prostředí.
 Společně s dashem se ti nainstaluje i grafická knihovna plotly.
 
