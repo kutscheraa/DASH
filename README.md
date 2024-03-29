@@ -29,8 +29,11 @@ Z modulu collections importujeme deque (obousměrná fronta) pro ukládání hod
     import  datetime
     from  collections  import  deque
 Teď si vytvoříme základní layout našeho dashboardu.
+
 **html div** seskupuje různé části našeho dashboardu
+
 **dcc.graph** je komponenta z knihovny dash_core_components
+
 **interval** jak často se graf updatuje můžete zvolit jakýkoliv **n_intervals** volte 0 - jedná se o počáteční hodnotu grafu
 
     app.layout  =  html.Div([
