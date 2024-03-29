@@ -20,6 +20,7 @@ Teď si vytvoříme jednoduchou aplikace, která bude v reálném čase ukazovat
 Na aplikaci si vysvětlíme jak funguje dash layout a callback.
 ## 2.1. Inicializace a app layout
 Naimportujeme si vše potřebné jako je psutil (system info - ram), datetime, dash, plotly.
+Z modulu collections importujeme deque (obousměrná fronta) pro ukládání hodnot využití RAM, to nám zajistí plynulý pohyb grafu.
 
     import  dash
     from  dash  import  Output, Input, dcc, html
@@ -27,7 +28,10 @@ Naimportujeme si vše potřebné jako je psutil (system info - ram), datetime, d
     import  plotly.graph_objs  as  go
     import  datetime
     from  collections  import  deque
-Z modulu collections importujeme deque (obousměrná fronta) pro ukládání hodnot využití RAM, to nám zajistí plynulý pohyb grafu.
+Teď si vytvoříme základní layout našeho dashboardu.
+**html div** seskupuje různé části našeho dashboardu
+**dcc.graph** je komponenta z knihovny dash_core_components
+**interval** jak často se graf updatuje můžete zvolit jakýkoliv **n_intervals** volte 0 - jedná se o počáteční hodnotu grafu
 
     app.layout  =  html.Div([
     dcc.Graph(id="live-update-graph"),
