@@ -16,7 +16,7 @@ Z githubu stáhni [app.py](https://github.com/kutscheraa/DASH/blob/main/setup/ap
 
     python app.py
 ## 2. Jednoduchá aplikace
-Teď si vytvoříme jednoduchou aplikace, která bude v reálném čase ukazovat využítí RAM.
+Teď si vytvoříme jednoduchou aplikaci, která bude v reálném čase ukazovat využítí RAM.
 Na aplikaci si vysvětlíme jak funguje dash layout a callback.
 ## 2.1. Inicializace a app layout
 Naimportujeme si vše potřebné jako je psutil (system info - ram), datetime, dash, plotly.
