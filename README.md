@@ -44,5 +44,5 @@ Teď si vytvoříme základní layout našeho dashboardu.
     id='interval-component',
     interval=1000, # Interval v milisekundách
     n_intervals=0) ])
-## 2.2. Call back a samotný graf
+## 2.2. Call back a graf
 ## 3. Pokročilá aplikace
