@@ -45,4 +45,24 @@ Teď si vytvoříme základní layout našeho dashboardu.
     interval=1000, # Interval v milisekundách
     n_intervals=0) ])
 ## 2.2. Callback a graf
+
+    data_memory = deque(maxlen=50)
+    data_time = deque(maxlen=50)
+    
+    @app.callback(Output('live-update-graph', 'figure'),
+                  [Input('interval-component', 'n_intervals')])
+    def update_graph_live(n):
+        # Načtení dat o využití RAM
+        x = datetime.datetime.now()
+        y = psutil.virtual_memory().percent
+    
+        # Přidání nových dat do fronty
+        data_memory.append(y)
+        data_time.append(x)
+    
+        # Vytvoření grafu
+        trace = go.Scatter(x=list(data_time), y=list(data_memory), mode='lines+markers')
+        layout = go.Layout(title='Real-time RAM Usage', xaxis=dict(title='Time'), yaxis=dict(title='RAM Usage (%)'))
+        return {'data': [trace], 'layout': layout}
+dodělat
 ## 3. Pokročilá aplikace
