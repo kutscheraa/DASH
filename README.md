@@ -6,7 +6,6 @@
 ## 1. Setup
 Naklonuj si repozitář a nainstaluj vše potřebné.
 *Společně s dashem se ti nainstaluje i grafická knihovna **plotly**.
-
 Dash aplikace pracují s **flaskem**, proto je tu command i pro flask.*
 
 
