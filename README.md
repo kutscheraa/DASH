@@ -4,15 +4,21 @@
  2. Jednoduchá aplikace
  4. Prokročilá aplikace
 ## 1. Setup
-Nainstaluj pomocí commandu globálně nebo do virtuálního prostředí.
-Společně s dashem se ti nainstaluje i grafická knihovna plotly.
-Dash aplikace pracují s flaskem, proto je tu command i pro flask.
+Naklonuj si repozitář a nainstaluj vše potřebné.
+*Společně s dashem se ti nainstaluje i grafická knihovna plotly.
+Dash aplikace pracují s flaskem, proto je tu command i pro flask.*
 
 
+    
+    git clone https://github.com/kutscheraa/DASH
+    cd DASH
+    python3 -m venv venv
+    source venv/bin/activate
     pip install dash, flask, pandas
     
+    
 ## 1.1. Test aplikace
-Z githubu stáhni [app.py](https://github.com/kutscheraa/DASH/blob/main/setup/app.py) ve složce setup a otestuj instalaci.
+Otestuj instalaci spuštěním test appky.
 
     python app.py
 ## 2. Jednoduchá aplikace
@@ -28,15 +34,14 @@ Z modulu collections importujeme deque (obousměrná fronta) pro ukládání hod
     import  plotly.graph_objs  as  go
     import  datetime
     from  collections  import  deque
-Teď si vytvoříme základní layout našeho dashboardu.
 
-**html div** seskupuje různé části našeho dashboardu
+**Teď si vytvoříme základní layout našeho dashboardu.**
 
-**dcc.graph** je komponenta z knihovny dash_core_components
+ - **html div** seskupuje různé části našeho dashboardu
+ - **dcc.graph** je komponenta z knihovny dash_core_components
+ - **interval** jak často se graf updatuje můžete zvolit jakýkoliv
+ - **n_intervals** volte 0 - jedná se o počáteční hodnotu grafu
 
-**interval** jak často se graf updatuje můžete zvolit jakýkoliv 
-
-**n_intervals** volte 0 - jedná se o počáteční hodnotu grafu
 
     app.layout  =  html.Div([
     dcc.Graph(id="live-update-graph"),
@@ -44,6 +49,7 @@ Teď si vytvoříme základní layout našeho dashboardu.
     id='interval-component',
     interval=1000, # Interval v milisekundách
     n_intervals=0) ])
+
 ## 2.2. Callback a graf
 
     data_memory = deque(maxlen=50)
