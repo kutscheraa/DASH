@@ -5,8 +5,8 @@
  4. Prokročilá aplikace
 ## 1. Setup
 Naklonuj si repozitář a nainstaluj vše potřebné.
-*Společně s dashem se ti nainstaluje i grafická knihovna plotly.
-Dash aplikace pracují s flaskem, proto je tu command i pro flask.*
+*Společně s dashem se ti nainstaluje i grafická knihovna **plotly**.
+Dash aplikace pracují s **flaskem**, proto je tu command i pro flask.*
 
 
     
@@ -20,10 +20,11 @@ Dash aplikace pracují s flaskem, proto je tu command i pro flask.*
 ## 1.1. Test aplikace
 Otestuj instalaci spuštěním test appky.
 
-    python app.py
+    cd setup
+    python app1.py
 ## 2. Jednoduchá aplikace
 Teď si vytvoříme jednoduchou aplikaci, která bude v reálném čase ukazovat využítí RAM.
-Na aplikaci si vysvětlíme jak funguje dash layout a callback.
+Na aplikaci si vysvětlíme jak funguje dash **layout** a **callback**.
 ## 2.1. Inicializace a app layout
 Naimportujeme si vše potřebné jako je psutil (system info - ram), datetime, dash, plotly.
 Z modulu collections importujeme deque (obousměrná fronta) pro ukládání hodnot využití RAM, to nám zajistí plynulý pohyb grafu.
@@ -35,7 +36,7 @@ Z modulu collections importujeme deque (obousměrná fronta) pro ukládání hod
     import  datetime
     from  collections  import  deque
 
-**Teď si vytvoříme základní layout našeho dashboardu.**
+**Vytvoříme základní layout našeho dashboardu.**
 
  - **html div** seskupuje různé části našeho dashboardu
  - **dcc.graph** je komponenta z knihovny dash_core_components
