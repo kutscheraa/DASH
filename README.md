@@ -42,13 +42,13 @@ Z modulu collections importujeme deque (obousměrná fronta) pro ukládání hod
  - **interval** jak často se graf updatuje můžete zvolit jakýkoliv
  - **n_intervals** volte 0 - jedná se o počáteční hodnotu grafu
 
-
-    app.layout  =  html.Div([
-    dcc.Graph(id="live-update-graph"),
-    dcc.Interval(
-    id='interval-component',
-    interval=1000, # Interval v milisekundách
-    n_intervals=0) ])
+       
+       app.layout = html.Div([
+       dcc.Graph(id="live-update-graph"),
+       dcc.Interval(
+       id='interval-component',
+       interval=1000, # Interval v milisekundách
+       n_intervals=0)])
 
 ## 2.2. Callback a graf
 
