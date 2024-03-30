@@ -13,9 +13,10 @@ Dash aplikace pracují s **flaskem**, proto je tu command i pro flask.*
     
     git clone https://github.com/kutscheraa/DASH
     cd DASH
-    python3 -m venv venv
-    source venv/bin/activate
-    pip install dash, flask, pandas
+    python -m venv venv
+    Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
+    ./venv/Scripts/activate
+    pip install dash, flask, pandas, psutil
     
     
 ## 1.1. Test aplikace
