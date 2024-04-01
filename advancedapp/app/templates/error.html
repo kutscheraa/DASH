@@ -1,0 +1,9 @@
+{% with title=title %}
+{% include "header.html" %}
+{% endwith %}
+<div class="flex justify-center items-center h-[calc(100vh-200px)]">
+    <h1 class="text-2xl font-thin">{{error}}</h1>
+</div>
+{% with title=title %}
+{% include "footer.html" %}
+{% endwith %}
