@@ -1,4 +1,7 @@
 from flask import Flask, render_template, request
+from dash import html
+import dash
+
 
 app = Flask(__name__)
 
@@ -12,8 +15,6 @@ def page_not_found(error):
     return render_template('error.html', error = error), 405
 
 @app.route("/")
-@app.route("/index")
-@app.route("/home")
 def index(): 
     return render_template('index.html', title="Home")
 
@@ -26,6 +27,9 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     return 'To be implemented'
+
+dash_app = dash.Dash(server=app, routes_pathname_prefix="/dash/")
+dash_app.layout = html.Div("This is the Dash app.")
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
