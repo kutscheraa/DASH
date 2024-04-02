@@ -5,80 +5,64 @@
     <h1 class="mb-4 text-2xl text-bold tracking-wide">{{ title }}</h1>
     <form action="" method="post">
         <div class="border-b border-gray-300 pb-12">
-            <h2 class="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
+            <h2 class="text-base font-semibold leading-7 text-gray-900">Order Information</h2>
 
             <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
-                <div class="sm:col-span-2">
-                    <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">First
-                        name</label>
+                <div class="col-span-full">
+                    <label for="item_type" class="block text-sm font-medium leading-6 text-gray-900">Item type</label>
                     <div class="mt-2">
-                        <input type="text" name="first-name" id="first-name" autocomplete="given-name"
-                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                    </div>
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="last-name" class="block text-sm font-medium leading-6 text-gray-900">Last
-                        name</label>
-                    <div class="mt-2">
-                        <input type="text" name="last-name" id="last-name" autocomplete="family-name"
-                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                    </div>
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email
-                        address</label>
-                    <div class="mt-2">
-                        <input id="email" name="email" type="email" autocomplete="email"
-                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                    </div>
-                </div>
-
-                <div class="sm:col-span-3">
-                    <label for="country" class="block text-sm font-medium leading-6 text-gray-900">Country</label>
-                    <div class="mt-2">
-                        <select id="country" name="country" autocomplete="country-name"
+                        <select id="item_type" name="item_type"
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
-                            <option>Czech republic</option>
+                            <option value="" disabled selected>Select item type</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Books">Books</option>
+                            <option value="Home Appliances">Home Appliances</option>
+                            <option value="Toys">Toys</option>
+                            <option value="Sports Equipment">Sports Equipment</option>
+                            <option value="Jewelry">Jewelry</option>
+                            <option value="Furniture">Furniture</option>
+                            <option value="Tools">Tools</option>
+                            <option value="Food">Food</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-span-full">
+                    <label for="region" class="block text-sm font-medium leading-6 text-gray-900">Region</label>
+                    <div class="mt-2">
+                        <select id="region" name="region"
+                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                            <option value="" disabled selected>Select region</option>
+                            <option value="Hlavní město Praha">Hlavní město Praha</option>
+                            <option value="Středočeský kraj">Středočeský kraj</option>
+                            <option value="Jihočeský kraj">Jihočeský kraj</option>
+                            <option value="Plzeňský kraj">Plzeňský kraj</option>
+                            <option value="Karlovarský kraj">Karlovarský kraj</option>
+                            <option value="Ústecký kraj">Ústecký kraj</option>
+                            <option value="Liberecký kraj">Liberecký kraj</option>
+                            <option value="Královéhradecký kraj">Královéhradecký kraj</option>
+                            <option value="Pardubický kraj">Pardubický kraj</option>
+                            <option value="Kraj Vysočina">Kraj Vysočina</option>
+                            <option value="Jihomoravský kraj">Jihomoravský kraj</option>
+                            <option value="Olomoucký kraj">Olomoucký kraj</option>
+                            <option value="Zlínský kraj">Zlínský kraj</option>
+                            <option value="Moravskoslezský kraj">Moravskoslezský kraj</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="col-span-full">
-                    <label for="street-address" class="block text-sm font-medium leading-6 text-gray-900">Street
-                        address</label>
+                <div class="col-span-1">
+                    <label for="price" class="block text-sm font-medium leading-6 text-gray-900">Price</label>
                     <div class="mt-2">
-                        <input type="text" name="street-address" id="street-address" autocomplete="street-address"
+                        <input type="number" min="0" name="price" id="price" value="0"
                             class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     </div>
                 </div>
+            </div>
 
-                <div class="sm:col-span-2 sm:col-start-1">
-                    <label for="city" class="block text-sm font-medium leading-6 text-gray-900">City</label>
-                    <div class="mt-2">
-                        <input type="text" name="city" id="city" autocomplete="address-level2"
-                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                    </div>
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="region" class="block text-sm font-medium leading-6 text-gray-900">State /
-                        Province</label>
-                    <div class="mt-2">
-                        <input type="text" name="region" id="region" autocomplete="address-level1"
-                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                    </div>
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="postal-code" class="block text-sm font-medium leading-6 text-gray-900">ZIP /
-                        Postal code</label>
-                    <div class="mt-2">
-                        <input type="text" name="postal-code" id="postal-code" autocomplete="postal-code"
-                            class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                    </div>
-                </div>
+            <div class="mt-8">
+                <button type="submit" class="cursor-pointer rounded-md bg-indigo-600 px-8 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Create</button>
             </div>
         </div>
     </form>
