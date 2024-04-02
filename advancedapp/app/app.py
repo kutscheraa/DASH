@@ -45,6 +45,7 @@ def login():
         return render_template('login.html')
     return 'To be implemented'
 
+# Move dash app to different file
 dash_app = dash.Dash(server=app, routes_pathname_prefix="/dash/")
 # Create a session
 Session = sessionmaker(bind=engine)
