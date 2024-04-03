@@ -4,6 +4,16 @@ import dash
 from dash.dependencies import Input, Output
 from db import *
 
+import json
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objs as go
+
+# Read the GeoJSON file
+with open('static/kraje.json', 'r', encoding='utf-8') as f:
+    geojson = json.load(f)
+df = pd.read_csv('static/test.csv')
+
 dash_app = dash.Dash(server=app, routes_pathname_prefix="/dash/")
 
 # Create a session
@@ -20,7 +30,30 @@ dash_app.layout = html.Div([
         ),
     ]),
     html.Div(id='output-data'),
+    dcc.Graph(
+        id='geojson-map',
+        config={'scrollZoom': False},
+        figure={},
+    ),
 ])
+
+# Define callback to update the map
+@dash_app.callback(
+    Output('geojson-map', 'figure'),
+    [Input('region-dropdown', 'value')]
+)
+def update_map(region_dropdown):
+    fig = px.choropleth_mapbox(df, geojson=geojson, locations='name-cz', featureidkey="properties.name:cs", color='num',
+                           color_continuous_scale="plasma",
+                           range_color=(0, 12),
+                           labels={'num': 'Náhodná proměnná'},
+                           mapbox_style="carto-positron",
+                           zoom=6.2, center={"lat": 49.7437522, "lon": 15.3386356},
+                           )
+
+    fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+
+    return fig
 
 # Define callback to update data based on region selection
 @dash_app.callback(
@@ -46,3 +79,4 @@ def update_data(region):
             return html.P(f"An error occurred: {str(e)}")
     else:
         return html.P("Select a region to view data.")
+    
