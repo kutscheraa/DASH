@@ -155,4 +155,3 @@ def update_data(region):
             return html.P(f"An error occurred: {str(e)}")
     else:
         return html.P("Select a region to view data.")
-    
