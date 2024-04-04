@@ -3,15 +3,13 @@ import dash
 from app import app
 from dash import html, dcc
 from dash.dependencies import Input, Output
-from db import sessionmaker, engine, Order, func, SQLAlchemyError
+from db import Session, engine, Order, func, SQLAlchemyError
+from flask_login import login_required
 
 import json
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objs as go
-
-Session = sessionmaker(bind=engine)
-session = Session()
 
 # Read the GeoJSON file
 with open('static/kraje.json', 'r', encoding='utf-8') as f:
@@ -19,26 +17,31 @@ with open('static/kraje.json', 'r', encoding='utf-8') as f:
 
 dash_app = dash.Dash(server=app, routes_pathname_prefix="/dash/")
 
-dash_app.layout = html.Div([
-    html.H1("Data from MySQL Database"),
-    html.Div([
-        html.Label("Select Region:"),
-        dcc.Dropdown(
-            id='region-dropdown',
-            options=[{'label': region[0], 'value': region[0]} for region in session.query(Order.region).distinct().all()],
-            value=None
-        ),
-    ]),
-    html.Div(id='output-data'),
-    dcc.Graph(
-        id='geojson-map',
-        config={'scrollZoom': False},
-        figure={},
-    ),
-])
+def protect_dashviews(dash_app):
+    for view_func in dash_app.server.view_functions:
+        if view_func.startswith(dash_app.config['routes_pathname_prefix']):
+            dash_app.server.view_functions[view_func] = login_required(
+                dash_app.server.view_functions[view_func])
 
-session.commit()
-session.close()
+protect_dashviews(dash_app)
+with Session(engine) as session:
+    dash_app.layout = html.Div([
+        html.H1("Data from MySQL Database"),
+        html.Div([
+            html.Label("Select Region:"),
+            dcc.Dropdown(
+                id='region-dropdown',
+                options=[{'label': region[0], 'value': region[0]} for region in session.query(Order.region).distinct().all()],
+                value=None
+            ),
+        ]),
+        html.Div(id='output-data'),
+        dcc.Graph(
+            id='geojson-map',
+            config={'scrollZoom': False},
+            figure={},
+        ),
+    ])
 
 # Define callback to update the map
 @dash_app.callback(
@@ -46,12 +49,9 @@ session.close()
     [Input('region-dropdown', 'value')]
 )
 def update_map(region_dropdown):
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    # Query the database to get the count of items per region
-    result = session.query(Order.region, func.count(Order.region)).group_by(Order.region).all()
-    session.commit()
-    session.close()
+    with Session(engine) as session:
+        # Query the database to get the count of items per region
+        result = session.query(Order.region, func.count(Order.region)).group_by(Order.region).all()
     
     # Create a DataFrame from the query result
     df = pd.DataFrame(result, columns=['region', 'count'])
@@ -91,7 +91,8 @@ def update_map(region_dropdown):
 def update_data(region):
     if region:
         try:
-            data = session.query(Order).filter_by(region=region).all()
+            with Session(engine) as session:
+                data = session.query(Order).filter_by(region=region).all()
             if data:
                 table_rows = [
                     html.Tr([html.Td(getattr(row, col)) for col in Order.__table__.columns.keys()])

@@ -13,13 +13,12 @@ user_seeder.seed()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'login'
 
 @login_manager.user_loader
 def user_loader(user_id):
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    user = session.query(User).filter_by(id=int(user_id)).first()
-    session.close()
+    with Session(engine) as session:
+        user = session.query(User).filter_by(id=int(user_id)).first()
     return user
 
 @app.errorhandler(404)
@@ -37,14 +36,10 @@ def index():
 @app.route("/order", methods=['GET', 'POST']) 
 def order():
     if request.method == 'POST':
-        Session = sessionmaker(bind=engine)
-        session = Session()
-        new_data = Order(region=request.form['region'], item_type=request.form['item_type'], price=request.form['price'])
-        session.add(new_data)
-
-        # Commit the changes to the database
-        session.commit()
-        session.close()
+        with Session(engine) as session:
+            new_data = Order(region=request.form['region'], item_type=request.form['item_type'], price=request.form['price'])
+            session.add(new_data)
+            session.commit()
         flash('Order created successfully.')
 
     return render_template('order.html', title="Order")
@@ -58,16 +53,16 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        Session = sessionmaker(bind=engine)
-        session = Session()
+        with Session(engine) as session:
+            user = session.query(User).filter_by(username=username).first()
 
-        user = session.query(User).filter_by(username=username).first()
+        next = request.args.get('next')
 
         if user and user.password == password:
             login_user(user)
             session.close()
             flash('Přihlášen.')
-            return redirect(url_for('index'))
+            return redirect(next or url_for('index'))
         else:
             flash('Neúspěch.')
             session.close()

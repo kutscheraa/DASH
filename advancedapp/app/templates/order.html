@@ -6,15 +6,6 @@
     <form action="" method="post">
         <div class="border-b border-gray-300 pb-12">
             <h2 class="text-base font-semibold leading-7 text-gray-900">Order Information</h2>
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul class="bg-green-300 p-4 text-sm font-semibold text-slate-800 rounded-md my-4">
-                {% for message in messages %}
-                <li>{{ message }}</li>
-                {% endfor %}
-                </ul>
-            {% endif %}
-            {% endwith %}
             <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
                 <div class="col-span-full">
                     <label for="item_type" class="block text-sm font-medium leading-6 text-gray-900">Item type</label>
