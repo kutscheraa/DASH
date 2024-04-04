@@ -1,4 +1,4 @@
-from dash import Dash, html, dcc, callback, Output, Input
+from dash import Dash, html, dcc
 import plotly.express as px
 import pandas as pd
 
@@ -9,20 +9,11 @@ df = pd.read_csv('https://raw.githubusercontent.com/RDeconomist/observatory/main
 app = Dash(__name__)
 
 # Definuje layout aplikace
+fig = px.line(df, x='Date', y='24h High (USD)')
 app.layout = html.Div([
     html.H1(children='BTC PRICE', style={'textAlign':'center'}),
-    dcc.Dropdown(df.Currency.unique(), 'BTC', id='dropdown-selection'),
-    dcc.Graph(id='graph-content')
+    dcc.Graph(figure=fig)
 ])
-
-# Definuje callback pro aktualizaci grafu
-@callback(
-    Output('graph-content', 'figure'),
-    Input('dropdown-selection', 'value')
-)
-def update_graph(value):
-    dff = df[df.Currency==value]
-    return px.line(dff, x='Date', y='24h High (USD)')
 
 if __name__ == '__main__':
     app.run(debug=True)
