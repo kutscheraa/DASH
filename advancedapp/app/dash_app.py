@@ -24,8 +24,9 @@ def protect_dashviews(dash_app):
                 dash_app.server.view_functions[view_func])
 
 protect_dashviews(dash_app)
+
 with Session(engine) as session:
-    dash_app.layout = html.Div([
+    dash_app.layout = html.Div(children=[
         html.H1("Data from MySQL Database"),
         html.Div([
             html.Label("Select Region:"),
@@ -47,9 +48,10 @@ with Session(engine) as session:
             dcc.Graph(
                 id="pie-types"
             ),
-        ], style={'display': 'flex', 'flex-direction': 'row'}),
+        ], style={'display': 'flex', 'flex-direction': 'row', 'justify-content': 'space-between', 'margin-top': '20px', 'margin-bottom': '20px', 'padding': '20px'}),
         dcc.Graph(id='orders-per-day')
     ])
+
 
 @dash_app.callback(
     Output('orders-per-day', 'figure'),
@@ -64,13 +66,27 @@ def update_orders_per_day(region):
 
     df = pd.DataFrame(data, columns=['date', 'count'])
 
-    fig = go.Figure(data=[go.Scatter(x=df['date'], y=df['count'])])
+    fig = go.Figure(data=[go.Bar(x=df['date'], y=df['count'])])
     fig.update_layout(
         title='Orders per day',
         xaxis_title='Date',
         yaxis_title='Number of orders'
     )
+    fig.update_xaxes(
+        rangeslider_visible=True,
+        rangeselector=dict(
+            buttons=list([
+                dict(count=1, label="1d", step="day", stepmode="backward"),
+                dict(count=7, label="1w", step="day", stepmode="backward"),
+                dict(count=30, label="1m", step="day", stepmode="backward"),
+                dict(count=365, label="1y", step="day", stepmode="backward"),
+                dict(step="all")
+            ])
+        )
+    )
     return fig
+
+
 
 @dash_app.callback(
     Output("pie-types", "figure"),
