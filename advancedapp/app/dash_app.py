@@ -40,12 +40,14 @@ with Session(engine) as session:
             id='geojson-map',
             config={'scrollZoom': False},
         ),
-        dcc.Graph(
-            id="pie-percentage"
-        ),
-        dcc.Graph(
-            id="pie-types"
-        ),
+        html.Div([
+            dcc.Graph(
+                id="pie-percentage"
+            ),
+            dcc.Graph(
+                id="pie-types"
+            ),
+        ], style={'display': 'flex', 'flex-direction': 'row'}),
     ])
 
 @dash_app.callback(
