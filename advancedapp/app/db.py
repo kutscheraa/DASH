@@ -15,10 +15,10 @@ Base = declarative_base()
 # Define your data model
 class Data(Base):
     __tablename__ = 'data'
-
     id = Column(Integer, primary_key=True)
     region = Column(String(30))
     item_type = Column(String(30))
+    price = Column(Integer)
     created_at = Column(DateTime, default=datetime.now)
 
 # Create tables in the database if they don't exist

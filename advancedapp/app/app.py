@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request, flash
 from db import *
+from seeders.data_seeder import seed
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
-
+seed()
 
 @app.errorhandler(404)
 def page_not_found(error):
@@ -25,7 +26,7 @@ def order():
         Session = sessionmaker(bind=engine)
         session = Session()
 
-        new_data = Data(region=request.form['region'], item_type=request.form['item_type'])
+        new_data = Data(region=request.form['region'], item_type=request.form['item_type'], price=request.form['price'])
         session.add(new_data)
 
         # Commit the changes to the database
