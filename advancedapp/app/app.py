@@ -2,12 +2,14 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_login import LoginManager, login_user, logout_user, login_required
 from db import *
 import seeders.order_seeder as order_seeder
+import seeders.user_seeder as user_seeder
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 # Seeding db
 order_seeder.seed()
+user_seeder.seed()
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -64,6 +66,7 @@ def login():
         if user and user.password == password:
             login_user(user)
             session.close()
+            flash('Přihlášen.')
             return redirect(url_for('index'))
         else:
             flash('Neúspěch.')
