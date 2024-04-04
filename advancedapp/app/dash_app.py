@@ -1,3 +1,4 @@
+# dash_app.py
 from app import app
 from dash import html, dcc, dash_table
 import dash
@@ -17,25 +18,6 @@ session = Session()
 with open('static/kraje.json', 'r', encoding='utf-8') as f:
     geojson = json.load(f)
 
-# Query the database to get the count of items per region
-result = session.query(Data.region, func.count(Data.region)).group_by(Data.region).all()
-
-# Create a DataFrame from the query result
-df = pd.DataFrame(result, columns=['region', 'count'])
-# Create a DataFrame with all possible regions
-all_regions = pd.DataFrame({
-    'region': [
-        'Hlavní město Praha', 'Středočeský kraj', 'Jihočeský kraj', 'Plzeňský kraj',
-        'Karlovarský kraj', 'Ústecký kraj', 'Liberecký kraj', 'Královéhradecký kraj',
-        'Pardubický kraj', 'Kraj Vysočina', 'Jihomoravský kraj', 'Olomoucký kraj',
-        'Zlínský kraj', 'Moravskoslezský kraj'
-    ]
-})
-# Merge with main DataFrame
-df = pd.merge(all_regions, df, on='region', how='left')
-# Fill NaN values with 0
-df['count'] = df['count'].fillna(0)
-
 dash_app = dash.Dash(server=app, routes_pathname_prefix="/dash/")
 
 dash_app.layout = html.Div([
@@ -54,8 +36,10 @@ dash_app.layout = html.Div([
         config={'scrollZoom': False},
         figure={},
     ),
-    dash_table.DataTable(df.to_dict('records')),
 ])
+
+session.commit()
+session.close()
 
 # Define callback to update the map
 @dash_app.callback(
@@ -63,6 +47,30 @@ dash_app.layout = html.Div([
     [Input('region-dropdown', 'value')]
 )
 def update_map(region_dropdown):
+    # Create a session
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    # Query the database to get the count of items per region
+    result = session.query(Data.region, func.count(Data.region)).group_by(Data.region).all()
+    
+    session.commit()
+    session.close()
+    
+    # Create a DataFrame from the query result
+    df = pd.DataFrame(result, columns=['region', 'count'])
+    # Create a DataFrame with all possible regions
+    all_regions = pd.DataFrame({
+        'region': [
+            'Hlavní město Praha', 'Středočeský kraj', 'Jihočeský kraj', 'Plzeňský kraj',
+            'Karlovarský kraj', 'Ústecký kraj', 'Liberecký kraj', 'Královéhradecký kraj',
+            'Pardubický kraj', 'Kraj Vysočina', 'Jihomoravský kraj', 'Olomoucký kraj',
+            'Zlínský kraj', 'Moravskoslezský kraj'
+        ]
+    })
+    # Merge with main DataFrame
+    df = pd.merge(all_regions, df, on='region', how='left')
+    # Fill NaN values with 0
+    df['count'] = df['count'].fillna(0)
     fig = px.choropleth_mapbox(df, 
                             geojson=geojson, 
                             locations='region', 
