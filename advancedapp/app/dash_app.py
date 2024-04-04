@@ -1,16 +1,15 @@
 # dash_app.py
-from app import app
-from dash import html, dcc, dash_table
 import dash
+from app import app
+from dash import html, dcc
 from dash.dependencies import Input, Output
-from db import *
+from db import sessionmaker, engine, Order, func, SQLAlchemyError
 
 import json
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objs as go
 
-# Create a session
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -26,7 +25,7 @@ dash_app.layout = html.Div([
         html.Label("Select Region:"),
         dcc.Dropdown(
             id='region-dropdown',
-            options=[{'label': region[0], 'value': region[0]} for region in session.query(Data.region).distinct().all()],
+            options=[{'label': region[0], 'value': region[0]} for region in session.query(Order.region).distinct().all()],
             value=None
         ),
     ]),
@@ -47,12 +46,10 @@ session.close()
     [Input('region-dropdown', 'value')]
 )
 def update_map(region_dropdown):
-    # Create a session
     Session = sessionmaker(bind=engine)
     session = Session()
     # Query the database to get the count of items per region
-    result = session.query(Data.region, func.count(Data.region)).group_by(Data.region).all()
-    
+    result = session.query(Order.region, func.count(Order.region)).group_by(Order.region).all()
     session.commit()
     session.close()
     
@@ -94,14 +91,14 @@ def update_map(region_dropdown):
 def update_data(region):
     if region:
         try:
-            data = session.query(Data).filter_by(region=region).all()
+            data = session.query(Order).filter_by(region=region).all()
             if data:
                 table_rows = [
-                    html.Tr([html.Td(getattr(row, col)) for col in Data.__table__.columns.keys()])
+                    html.Tr([html.Td(getattr(row, col)) for col in Order.__table__.columns.keys()])
                     for row in data
                 ]
                 return html.Table([
-                    html.Thead(html.Tr([html.Th(col) for col in Data.__table__.columns.keys()])),
+                    html.Thead(html.Tr([html.Th(col) for col in Order.__table__.columns.keys()])),
                     html.Tbody(table_rows)
                 ])
             else:
