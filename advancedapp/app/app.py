@@ -61,10 +61,10 @@ def login():
         if user and user.password == password:
             login_user(user)
             session.close()
-            flash('Přihlášen.')
+            flash("You're in!")
             return redirect(next or url_for('index'))
         else:
-            flash('Neúspěch.')
+            flash('Wrong password or username.')
             session.close()
 
     return redirect(url_for('login'))
@@ -73,7 +73,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash('Odhlášen.')
+    flash("You're out!")
     return redirect(url_for('index'))
 
 from dash_app import *
