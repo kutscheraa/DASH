@@ -11,6 +11,7 @@ engine = create_engine('mysql+mysqlconnector://flask_user:flask_password@db/flas
 Base = declarative_base()
 
 from models.order import Order
+from models.user import User
 
 # Create tables in the database if they don't exist
 Base.metadata.create_all(engine)

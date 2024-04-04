@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, flash
+from flask import Flask, render_template, request, flash, redirect, url_for
+from flask_login import LoginManager, login_user, logout_user, login_required
 from db import *
 import seeders.order_seeder as order_seeder
 
@@ -7,6 +8,17 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 # Seeding db
 order_seeder.seed()
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def user_loader(user_id):
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    user = session.query(User).filter_by(id=int(user_id)).first()
+    session.close()
+    return user
 
 @app.errorhandler(404)
 def page_not_found(error):
@@ -39,10 +51,32 @@ def order():
 def login():
     if request.method == 'GET':
         return render_template('login.html')
-    return 'To be implemented'
 
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
 
+        Session = sessionmaker(bind=engine)
+        session = Session()
 
+        user = session.query(User).filter_by(username=username).first()
+
+        if user and user.password == password:
+            login_user(user)
+            session.close()
+            return redirect(url_for('index'))
+        else:
+            flash('Neúspěch.')
+            session.close()
+
+    return redirect(url_for('login'))
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    flash('Odhlášen.')
+    return redirect(url_for('index'))
 
 from dash_app import *
 
