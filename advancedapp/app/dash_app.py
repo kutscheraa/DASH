@@ -48,7 +48,29 @@ with Session(engine) as session:
                 id="pie-types"
             ),
         ], style={'display': 'flex', 'flex-direction': 'row'}),
+        dcc.Graph(id='orders-per-day')
     ])
+
+@dash_app.callback(
+    Output('orders-per-day', 'figure'),
+    [Input('region-dropdown', 'value')]
+)
+def update_orders_per_day(region):
+    with Session(engine) as session:
+        if region:
+            data = session.query(func.date(Order.created_at), func.count(Order.created_at)).filter_by(region=region).group_by(func.date(Order.created_at)).all()
+        else:
+            data = session.query(func.date(Order.created_at), func.count(Order.created_at)).group_by(func.date(Order.created_at)).all()
+
+    df = pd.DataFrame(data, columns=['date', 'count'])
+
+    fig = go.Figure(data=[go.Scatter(x=df['date'], y=df['count'])])
+    fig.update_layout(
+        title='Orders per day',
+        xaxis_title='Date',
+        yaxis_title='Number of orders'
+    )
+    return fig
 
 @dash_app.callback(
     Output("pie-types", "figure"),
