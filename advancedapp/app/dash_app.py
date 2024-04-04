@@ -1,5 +1,5 @@
 from app import app
-from dash import html, dcc
+from dash import html, dcc, dash_table
 import dash
 from dash.dependencies import Input, Output
 from db import *
@@ -9,16 +9,35 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objs as go
 
-# Read the GeoJSON file
-with open('static/kraje.json', 'r', encoding='utf-8') as f:
-    geojson = json.load(f)
-df = pd.read_csv('static/test.csv')
-
-dash_app = dash.Dash(server=app, routes_pathname_prefix="/dash/")
-
 # Create a session
 Session = sessionmaker(bind=engine)
 session = Session()
+
+# Read the GeoJSON file
+with open('static/kraje.json', 'r', encoding='utf-8') as f:
+    geojson = json.load(f)
+
+# Query the database to get the count of items per region
+result = session.query(Data.region, func.count(Data.region)).group_by(Data.region).all()
+
+# Create a DataFrame from the query result
+df = pd.DataFrame(result, columns=['region', 'count'])
+# Create a DataFrame with all possible regions
+all_regions = pd.DataFrame({
+    'region': [
+        'Hlavní město Praha', 'Středočeský kraj', 'Jihočeský kraj', 'Plzeňský kraj',
+        'Karlovarský kraj', 'Ústecký kraj', 'Liberecký kraj', 'Královéhradecký kraj',
+        'Pardubický kraj', 'Kraj Vysočina', 'Jihomoravský kraj', 'Olomoucký kraj',
+        'Zlínský kraj', 'Moravskoslezský kraj'
+    ]
+})
+# Merge with main DataFrame
+df = pd.merge(all_regions, df, on='region', how='left')
+# Fill NaN values with 0
+df['count'] = df['count'].fillna(0)
+
+dash_app = dash.Dash(server=app, routes_pathname_prefix="/dash/")
+
 dash_app.layout = html.Div([
     html.H1("Data from MySQL Database"),
     html.Div([
@@ -35,6 +54,7 @@ dash_app.layout = html.Div([
         config={'scrollZoom': False},
         figure={},
     ),
+    dash_table.DataTable(df.to_dict('records')),
 ])
 
 # Define callback to update the map
@@ -43,13 +63,16 @@ dash_app.layout = html.Div([
     [Input('region-dropdown', 'value')]
 )
 def update_map(region_dropdown):
-    fig = px.choropleth_mapbox(df, geojson=geojson, locations='name-cz', featureidkey="properties.name:cs", color='num',
-                           color_continuous_scale="plasma",
-                           range_color=(0, 12),
-                           labels={'num': 'Náhodná proměnná'},
-                           mapbox_style="carto-positron",
-                           zoom=6.2, center={"lat": 49.7437522, "lon": 15.3386356},
-                           )
+    fig = px.choropleth_mapbox(df, 
+                            geojson=geojson, 
+                            locations='region', 
+                            featureidkey="properties.name:cs", 
+                            color='count',
+                            labels={'count': 'orders'},
+                            mapbox_style="white-bg",
+                            zoom=6.2, 
+                            center={"lat": 49.7437522, "lon": 15.3386356},
+                            )
 
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
 
