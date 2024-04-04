@@ -39,9 +39,56 @@ with Session(engine) as session:
         dcc.Graph(
             id='geojson-map',
             config={'scrollZoom': False},
-            figure={},
+        ),
+        dcc.Graph(
+            id="pie-percentage"
+        ),
+        dcc.Graph(
+            id="pie-types"
         ),
     ])
+
+@dash_app.callback(
+    Output("pie-types", "figure"),
+    [Input('region-dropdown', 'value')]
+)
+def update_pie_percentage(region_dropdown):
+    with Session(engine) as session:
+        # Query the database to get the count of items per region
+        result = session.query(Order.item_type, func.count(Order.item_type)).group_by(Order.item_type).all()
+    
+    # Create a DataFrame from the query result
+    df = pd.DataFrame(result, columns=['item_type', 'count'])
+
+    fig = px.pie(df, 
+                values='count', 
+                names='item_type', 
+                hole=0.5, 
+                color_discrete_sequence=px.colors.sequential.RdBu
+                )
+    return fig
+
+
+@dash_app.callback(
+    Output("pie-percentage", "figure"),
+    [Input('region-dropdown', 'value')]
+)
+def update_pie_percentage(region_dropdown):
+    with Session(engine) as session:
+        # Query the database to get the count of items per region
+        result = session.query(Order.region, func.count(Order.region)).group_by(Order.region).all()
+    
+    # Create a DataFrame from the query result
+    df = pd.DataFrame(result, columns=['region', 'count'])
+
+    fig = px.pie(df, 
+                values='count', 
+                names='region', 
+                hole=0.5, 
+                color_discrete_sequence=px.colors.sequential.RdBu
+                )
+    return fig
+
 
 # Define callback to update the map
 @dash_app.callback(
