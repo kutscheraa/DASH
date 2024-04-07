@@ -25,3 +25,17 @@ services:
       - db
     ports:
       - "8080:80"
+
+  testapp:
+    build: ./app1
+    volumes:
+      - "./app:/usr/src/setup"
+    ports:
+      - "5001:5001"
+    
+  simpleapp:
+    build: ./app2
+    volumes:
+      - "./app:/usr/src/simpleapp"
+    ports:
+      - "5002:5002"

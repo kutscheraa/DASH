@@ -6,3 +6,4 @@ mysql-connector-python==8.3.0
 Flask-SQLAlchemy==3.1.1
 Flask-login
 SQLAlchemy
+dash-bootstrap-components==1.4.1
