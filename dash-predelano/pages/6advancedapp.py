@@ -10,8 +10,13 @@ from db import *
 
 dash.register_page(__name__, path='/advancedapp', name='4) Advanced app', title='Advancedapp')
 
-# Read data from CSV file
-df = pd.read_csv('data/orders.csv')
+# Read data from DB
+Session = sessionmaker(bind=engine)
+session = Session()
+all_orders = session.query(Order).all()
+order_data = [{"id": order.id, "region": order.region, "item_type": order.item_type, "price": order.price, "created_at": order.created_at} for order in all_orders]
+df = pd.DataFrame(order_data)
+session.close()
 df['created_at'] = pd.to_datetime(df['created_at'])
 
 from assets.fig_layout import my_figlayout, my_linelayout, my_figlayout2
@@ -27,7 +32,7 @@ layout = dbc.Container([
             dbc.Label("Select Region:"),
             dcc.Dropdown(
                 id='region-dropdown',
-                options=[{'label': region, 'value': region} for region in df['region'].unique()],
+                options=[{'label': region, 'value': region} for region in df['region'].dropna().unique()],
                 value=None
             ),
         ])
