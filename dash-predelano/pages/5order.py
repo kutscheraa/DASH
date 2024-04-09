@@ -51,7 +51,7 @@ layout = dbc.Container([
         dbc.Col(dcc.Dropdown(options=["100","200","300","400","500"], id='price'), width=8),
     ]),
     dbc.Row([
-        dbc.Col(html.Button('Confirm', id='submit-val', n_clicks=0, className='my-button'), width=3),
+        dbc.Col(html.Button('Confirm', id='submit-val', n_clicks=0, className='my-button'), width=3, style={'text-align':'left', 'margin':'5px 1px 1px 1px'}),
         dbc.Col(html.Div(id='output-state'), width=9),
     ]),
 ], className='')
