@@ -9,7 +9,7 @@ dash.register_page(__name__, path='/order', name='3) Order', title='Order')
 # Rozhraní aplikace
 layout = dbc.Container([
     dbc.Row([
-        dbc.Col(dbc.CardHeader("Order insert", style={'textAlign': 'center'}), width=12)
+        dbc.Col([html.H3(['ORDER INSERT'])], width=12, className='row-titles')
     ]),
     dbc.Row([
         dbc.Col(dbc.Label('Item-type:'), width=2),
