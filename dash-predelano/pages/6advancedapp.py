@@ -10,14 +10,7 @@ from db import *
 
 dash.register_page(__name__, path='/advancedapp', name='4) Advanced app', title='Advancedapp')
 
-# Read data from DB
-Session = sessionmaker(bind=engine)
-session = Session()
-all_orders = session.query(Order).all()
-order_data = [{"id": order.id, "region": order.region, "item_type": order.item_type, "price": order.price, "created_at": order.created_at} for order in all_orders]
-df = pd.DataFrame(order_data)
-session.close()
-df['created_at'] = pd.to_datetime(df['created_at'])
+df = pd.DataFrame()
 
 from assets.fig_layout import my_figlayout, my_linelayout, my_figlayout2
 
@@ -26,7 +19,17 @@ with open('data/kraje.json', 'r', encoding='utf-8') as f:
     geojson = json.load(f)
 
 # Define the app layout
-layout = dbc.Container([
+def set_layout():
+    # Read data from DB
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    all_orders = session.query(Order).all()
+    order_data = [{"id": order.id, "region": order.region, "item_type": order.item_type, "price": order.price, "created_at": order.created_at} for order in all_orders]
+    global df
+    df = pd.DataFrame(order_data)
+    session.close()
+    df['created_at'] = pd.to_datetime(df['created_at'])
+    return dbc.Container([
     dbc.Row([
         dbc.Col([
             dbc.Label("Select Region:"),
@@ -86,7 +89,7 @@ layout = dbc.Container([
         dbc.Col([], width=2)
     ], className='row-content'),
 ])
-
+layout = set_layout
 # Define callback to update orders per day chart
 @callback(
     Output('orders-per-day', 'figure'),
