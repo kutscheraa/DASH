@@ -4,8 +4,6 @@ import dash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from db import *
-import seeders.order_seeder as order_seeder
-import seeders.user_seeder as user_seeder
 
 app = Dash(__name__, use_pages=True, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME],
 	   suppress_callback_exceptions=True, prevent_initial_callbacks=True)
