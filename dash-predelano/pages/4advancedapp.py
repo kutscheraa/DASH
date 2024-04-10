@@ -140,8 +140,8 @@ def update_pie_percentage(region):
                 )
     
     fig.layout = my_figlayout
-    fig.update_traces(textinfo='percent+label')  # Zobrazuje percentá a popisky
-    fig.update_layout(title='Orders by item type')  # Pridáva titulok pre lepšiu identifikáciu
+    fig.update_traces(textinfo='percent+label')  # percentage + description
+    fig.update_layout(title='Orders by item type')  # title
     return fig
 
 # Define callback to update pie types chart
@@ -163,8 +163,8 @@ def update_pie_types(region):
                 )
     
     fig.layout = my_figlayout
-    fig.update_traces(textinfo='percent+label')  # Zobrazuje percentá a popisky
-    fig.update_layout(title='Final sum per item-type (CZK)')  # Pridáva titulok pre lepšiu identifikáciu
+    fig.update_traces(textinfo='percent+label')
+    fig.update_layout(title='Final sum per item-type (CZK)')
     return fig
 
 
