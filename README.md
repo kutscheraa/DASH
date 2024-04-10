@@ -52,6 +52,7 @@ app.layout = dbc.Container([
 if __name__ == '__main__':
 	app.run_server(debug=True)
 ```
+Dále vytvoříme `📁assets` v kořenovém adresáři a `nav.py`. Kde vytvoříme menu a hlavičku pro naší aplikaci.
 ```python
 # assets/nav.py
 
@@ -75,6 +76,7 @@ _nav = dbc.Container([
     ])
 ])
 ```
+V `📁assets` vytvoříme soubor `footer.py`. Zde umístíme informace, které chceme aby byli zobrazeny dole na stránce jako footer.
 ```python
 # assets/footer.py
 
@@ -101,6 +103,7 @@ _footer = html.Div([
     ], fluid=True)
 ], className = 'footer')
 ```
+Naimportujeme námi vytvořené komponenty do `app.py` a přidáme do layoutu.
 ```python
 # app.py
 
@@ -111,7 +114,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 # from db import *
 
-app = Dash(__name__, use_pages=True, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME],
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME],
 	   suppress_callback_exceptions=True, prevent_initial_callbacks=True)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 server = app.server
