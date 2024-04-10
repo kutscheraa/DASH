@@ -32,7 +32,6 @@ app.layout = dbc.Container([
             dbc.Row([_footer])
 	    ], width = 10),
     ]),
-     dcc.Store(id='browser-memo', data=dict(), storage_type='session')
 ], fluid=True)
 
 ############################################################################################
