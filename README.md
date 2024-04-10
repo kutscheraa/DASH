@@ -14,23 +14,20 @@ První si naklonujeme repozitář, pak vytvoříme virtuální prostředí.
 ```python    
 git clone https://github.com/kutscheraa/DASH
 cd DASH
-python -m venv venv
+py -m venv venv
 ```
 
 Aktivace a instalace potřebných knihoven. Doporučujeme použít Command Prompt místo PowerShell, který občas vyhodí chybu při spouštění scriptu.
 
 ```python   
 ./venv/Scripts/activate
-python -m pip install -r requirements.txt
+py -m pip install -r requirements.txt
 
 python app.py
 ``` 
 
 ## 1.1. Test aplikace
-Otestuj instalaci spuštěním test appky.
-
-    cd setup
-    python app1.py
+Otestuj instalaci spuštěním `app.py`.
 
 ```python
 # app.py
