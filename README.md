@@ -9,7 +9,8 @@
     4. [Callback](#)
 2. [Druhá aplikace](#)
 3. [Připojení databáze](#)
-4. [...](#)
+4. [Tvorba objednávky](#)
+5. [Statistiky objednávek](#)
 
 ## 0 Intro
 Aby jsi se v projektu lépe vyznal, je lepší znát základní koncepty.
@@ -683,7 +684,8 @@ def update_graph_live(n):
 
     return fig
 ```
-## 4. Databáze
+## 3. Připojení databáze
+Protože naše poslední aplikace bude využívat databázi tak si jí nadefinujeme. Jako první vytvoříme soubor v kořenovém adresáři `db.py`.
 ```python
 # db.py
 
@@ -704,22 +706,14 @@ from models.user import User
 # Create tables in the database if they don't exist
 Base.metadata.create_all(engine)
 ```
-```python
-# models/user.py
+Dále si vytvoříme ve `📁models` soubor `order.py`, ve kterém si nadeklarujeme model objednávky.
 
-from db import Base
-from sqlalchemy import Column, String, Integer
-
-class User(Base):
-    __tablename__ = 'users'
-
-    id = Column(Integer, primary_key=True)
-    username = Column(String(30), nullable=False)
-    password = Column(String(30), nullable=False)
-
-    def __repr__(self):
-        return '<User %r>' % self.username
-```
+Budeme potřebovat atributy:
+- id
+- region
+- item_type
+- price
+- created_at
 ```python
 # models/order.py
 
@@ -729,7 +723,6 @@ from db import Base
 from sqlalchemy import Column, String, Integer, DateTime
 from datetime import datetime
 
-# Define your data model
 class Order(Base):
     __tablename__ = 'orders'
     id = Column(Integer, primary_key=True)
@@ -738,7 +731,8 @@ class Order(Base):
     price = Column(Integer)
     created_at = Column(DateTime, default=datetime.now)
 ```
-## 5. Objednávka
+## 4. Tvorba objednávky
+Nyní vytvoříme formulář na přidávání záznamů do naší databáze.
 ```python
 # pages/3order.py
 
@@ -749,8 +743,15 @@ from sqlalchemy.orm import sessionmaker
 from db import *
 
 dash.register_page(__name__, path='/order', name='3) Order', title='Order')
+```
+Layout bude obsahovat několik řádků `dbc.Row` a sloupců `dbc.Col`, které organizují prvky formuláře.
+A tři dropdowny:
+- První dropdown nabízí výběr typu zboží (Electronics, Clothing, atd.).
+- Druhý dropdown umožňuje vybrat region (např. Hlavní město Praha, Středočeský kraj, atd.).
+- Třetí dropdown je určen pro cenu (100, 200, 300, 400, 500).
 
-# Rozhraní aplikace
+Po stisknutí tlačítka "Confirm" se spustí akce a výstup se zobrazí v `html.Div`.
+```python
 layout = dbc.Container([
     dbc.Row([
         dbc.Col([html.H3(['ORDER INSERT'])], width=12, className='row-titles')
@@ -799,8 +800,16 @@ layout = dbc.Container([
         dbc.Col(html.Div(id='output-state'), width=9),
     ]),
 ], className='')
+```
+Callback pro vkládání nových objednávek do databáze.
 
-# Callback pro vkládání nových objednávek do databáze
+- Otevřeme session pro práci s databází.
+- Vytvoříme novou objednávku s předanými hodnotami typu zboží, regionu a ceny.
+- Přidáme novou objednávku do databáze pomocí `session.add(new_order)`.
+- Potvrdí změny v databázi pomocí `session.commit()`.
+- Uzavře session pomocí `session.close()`.
+- A jako poslední vrátíme HTML element `html.Div`, který obsahuje informace o nově vložené objednávce.
+```python
 @callback(
     Output('output-state', 'children'),
     [Input('submit-val', 'n_clicks')],
@@ -823,6 +832,7 @@ def insert_order(n_clicks, item_type, region, price):
             html.P(f'Price: {price}')
         ])
 ```
+## 5. Statistiky objednávek
 ```python
 # pages/4advancedapp.py
 
@@ -1046,50 +1056,3 @@ def update_data(region):
         return html.P("Select a region to view data.")
 
 ```
-Naimportujeme si vše potřebné jako je psutil (system info - ram), datetime, dash, plotly.
-Z modulu collections importujeme deque (obousměrná fronta) pro ukládání hodnot využití RAM, to nám zajistí plynulý pohyb grafu.
-
-    import  dash
-    from  dash  import  Output, Input, dcc, html
-    import  psutil
-    import  plotly.graph_objs  as  go
-    import  datetime
-    from  collections  import  deque
-
-**Vytvoříme základní layout našeho dashboardu.**
-
- - **html div** seskupuje různé části našeho dashboardu
- - **dcc.graph** je komponenta z knihovny dash_core_components
- - **interval** jak často se graf updatuje můžete zvolit jakýkoliv
- - **n_intervals** volte 0 - jedná se o počáteční hodnotu grafu
-
-       
-       app.layout = html.Div([
-       dcc.Graph(id="live-update-graph"),
-       dcc.Interval(
-       id='interval-component',
-       interval=1000, # Interval v milisekundách
-       n_intervals=0)])
-
-## 2.2. Callback a graf
-
-    data_memory = deque(maxlen=50)
-    data_time = deque(maxlen=50)
-    
-    @app.callback(Output('live-update-graph', 'figure'),
-                  [Input('interval-component', 'n_intervals')])
-    def update_graph_live(n):
-        # Načtení dat o využití RAM
-        x = datetime.datetime.now()
-        y = psutil.virtual_memory().percent
-    
-        # Přidání nových dat do fronty
-        data_memory.append(y)
-        data_time.append(x)
-    
-        # Vytvoření grafu
-        trace = go.Scatter(x=list(data_time), y=list(data_memory), mode='lines+markers')
-        layout = go.Layout(title='Real-time RAM Usage', xaxis=dict(title='Time'), yaxis=dict(title='RAM Usage (%)'))
-        return {'data': [trace], 'layout': layout}
-dodělat
-## 3. Pokročilá aplikace
