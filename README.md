@@ -1,8 +1,9 @@
 # Data dashboards in Dash
 **Obsah:**
- 1. Setup
- 2. Jednoduchá aplikace
- 4. Prokročilá aplikace
+# Table of Contents
+
+1. [Test aplikace](#test-aplikace)
+2. [Vlastní styly](#vlastni-styly)
 ## 1. Setup
 Naklonuj si repozitář a nainstaluj vše potřebné.
 
@@ -26,7 +27,7 @@ py -m pip install -r requirements.txt
 python app.py
 ``` 
 
-## 1.1. Test aplikace
+## 1. Test aplikace
 Otestuj instalaci spuštěním `app.py`.
 
 ```python
