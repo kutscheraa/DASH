@@ -189,7 +189,7 @@ _footer = html.Div([
     ], fluid=True)
 ], className = 'footer')
 ```
-Naimportujeme námi vytvořené komponenty do `app.py` a přidáme do layoutu. Celý kód vypadá takto.
+Naimportujeme námi vytvořené komponenty do `app.py` a přidáme do layoutu. Celý kód vypadá takto:
 <details>
   <summary>KOMPLETNÍ KOD</summary>
   
