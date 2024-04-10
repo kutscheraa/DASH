@@ -52,7 +52,7 @@ app.layout = dbc.Container([
 if __name__ == '__main__':
 	app.run_server(debug=True)
 ```
-Dále vytvoříme `📁assets` v kořenovém adresáři a `nav.py`. Kde vytvoříme menu a hlavičku pro naší aplikaci.
+Dále vytvoříme `📁assets` v kořenovém adresáři a `assets/nav.py`. Kde vytvoříme menu a hlavičku pro naší aplikaci.
 ```python
 # assets/nav.py
 
