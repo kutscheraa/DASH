@@ -283,7 +283,9 @@ layout = dbc.Container([
     ], className='row-content')
 ])
 ```
-A v `app.py` přidáme parametr `use_pages=True`. Dále vytvoříme v `📁assets` další soubor `fig_layout.py`
+A v `app.py` přidáme parametr instanci dashe `use_pages=True`. 
+
+Jako poslední krok vytvoříme v `📁assets` soubor `fig_layout.py`, který bude obsahovat defaultní stylování a layout pro naše grafy.
 ```python
 # assets/fig_layout.py
 
@@ -348,8 +350,12 @@ my_linelayout = {
 }
 ```
 
-## 2. Vlastní styly
-V `📁assets` vytvoříme soubor `custom_style.css`
+## 1.3. Vlastní styly
+Dash podporuje přidávání vlastních CSS nebo JavaScript do vašich aplikací.
+Do složky assets můžete vkládat soubory CSS a JavaScript. Dash automaticky obsluhuje všechny soubory, které jsou v této složce obsaženy. Ve výchozím nastavení je adresa URL  `📁assets`, ale můžete si ji přizpůsobit pomocí argumentu `assets_url_path` v instanci `dash.Dash`.
+
+
+V `📁assets` tedy vytvoříme soubor `custom_style.css`
 ```css
 /* === ANY ELEMENT OVERRIDE ===*/
 * {
@@ -495,8 +501,15 @@ input[type='password'] {
 }
 
 ```
-## 3. Callback
-V `assets/1setup.py` naimportujeme vytvořený `fig_layout` pomocí `from assets.fig_layout import my_figlayout, my_linelayout`.
+V `assets/1setup.py` první naimportujeme vytvořený `fig_layout` pomocí `from assets.fig_layout import my_figlayout, my_linelayout`.
+## 1.4. Callback
+Poslední částí co nám zbývá k správné funkčnosti aplikace je callback.
+
+Funkce `plot_data` bere vstupní hodnotu value a vytváří graf na základě těchto dat. Používá globální proměnnou data, která je očekávána mít určitou strukturu s daty. V tomto kódu se předpokládá, že data obsahuje sloupce "Date" a "24h High (USD)", které jsou použity pro osy x a y grafu.
+
+Graf je vytvořen pomocí objektu `go.Figure` z knihovny Plotly, kde se přidává stopa (trace) typu "scatter", která reprezentuje body na grafu. Následně se aktualizuje vzhled grafu pomocí různých nastavení, jako jsou titulky os, velikost a formát čar atd.
+
+Nakonec je vytvořen grafický objekt `fig` a ten je vrácen jako výstup z funkce.
 ```python
 # v pages/1setup.py
 
