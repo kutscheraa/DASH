@@ -9,21 +9,23 @@ Naklonuj si repozitář a nainstaluj vše potřebné.
 *Společně s dashem se ti nainstaluje i grafická knihovna **plotly**.
 Dash aplikace pracují s **flaskem**, proto je tu command i pro flask.*
 
-První si naklonujeme repozitář. A vytvoříme virtuální prostředí.
+První si naklonujeme repozitář, pak vytvoříme virtuální prostředí.
+
 ```python    
 git clone https://github.com/kutscheraa/DASH
 cd DASH
 python -m venv venv
 ```
-    Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
 
-Aktivace a instalace potřebných knihoven. Doporučujeme použít Command Prompt místo PowerShell, který občas vyhodí error při aktivaci prostředí.
+Aktivace a instalace potřebných knihoven. Doporučujeme použít Command Prompt místo PowerShell, který občas vyhodí chybu při spouštění scriptu.
+
 ```python   
 ./venv/Scripts/activate
 python -m pip install -r requirements.txt
 
 python app.py
 ``` 
+
 ## 1.1. Test aplikace
 Otestuj instalaci spuštěním test appky.
 
