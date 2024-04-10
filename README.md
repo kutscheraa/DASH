@@ -1,16 +1,17 @@
 # Data dashboards in Dash
 # Obsah
 
-0. [Intro](#)
-1. [Hello world!](#)
-    1. [Komponenty](#)
-    2. [Stránka](#)
-    3. [Vlastní styly](#)
-    4. [Callback](#)
-2. [Druhá aplikace](#)
-3. [Připojení databáze](#)
-4. [Tvorba objednávky](#)
-5. [Statistiky objednávek](#)
+0. [Intro](#0-intro)
+1. [Setup](#1-setup)
+2. [Hello world!](#2-hello-world)
+    1. [Komponenty](#21-komponenty)
+    2. [Stránka](#22-stránky)
+    3. [Vlastní styly](#23-vlastní-styly)
+    4. [Callback](#24-callback)
+3. [Druhá aplikace](#3-druhá-aplikace)
+4. [Připojení databáze](#4-připojení-databáze)
+5. [Tvorba objednávky](#5-tvorba-objednávky)
+6. [Statistiky objednávek](#6-statistiky-objednávek)
 
 ## 0 Intro
 Aby jsi se v projektu lépe vyznal, je lepší znát základní koncepty.
@@ -233,7 +234,7 @@ if __name__ == '__main__':
 	app.run_server(debug=True)
 
 ```
-## 2.1. Komponenty
+## 2.2. Stránky
 Vytvoříme v kořenovém adresáři ještě jeden adresář `📁pages` a v něm soubor `1setup.py`.
 
 Každou jednotlivou stránku je nutné zaregistrovat `dash.register_page`. A nastavit parametry: 
@@ -351,7 +352,7 @@ my_linelayout = {
 }
 ```
 
-## 1.3. Vlastní styly
+## 2.3. Vlastní styly
 Dash podporuje přidávání vlastních CSS nebo JavaScript do vašich aplikací.
 Do složky assets můžete vkládat soubory CSS a JavaScript. Dash automaticky obsluhuje všechny soubory, které jsou v této složce obsaženy. Ve výchozím nastavení je adresa URL  `📁assets`, ale můžete si ji přizpůsobit pomocí argumentu `assets_url_path` v instanci `dash.Dash`.
 
@@ -503,7 +504,7 @@ input[type='password'] {
 
 ```
 V `assets/1setup.py` první naimportujeme vytvořený `fig_layout` pomocí `from assets.fig_layout import my_figlayout, my_linelayout`.
-## 1.4. Callback
+## 2.4. Callback
 Poslední částí co nám zbývá k správné funkčnosti aplikace je callback.
 
 Funkce `plot_data` bere vstupní hodnotu value a vytváří graf na základě těchto dat. Používá globální proměnnou data, která je očekávána mít určitou strukturu s daty. V tomto kódu se předpokládá, že data obsahuje sloupce "Date" a "24h High (USD)", které jsou použity pro osy x a y grafu.
@@ -596,7 +597,7 @@ def plot_data(value):
 
     return fig
 ```
-## 2. Druhá aplikace
+## 3. Druhá aplikace
 Teď si vytvoříme jednoduchou aplikaci, která bude v reálném čase ukazovat využítí RAM. V `📁pages` vytvoříme další soubor `2simpleapp.py`
 ```python
 # pages/2simpleapp.py
@@ -684,7 +685,7 @@ def update_graph_live(n):
 
     return fig
 ```
-## 3. Připojení databáze
+## 4. Připojení databáze
 Protože naše poslední aplikace bude využívat databázi tak si jí nadefinujeme. Jako první vytvoříme soubor v kořenovém adresáři `db.py`.
 ```python
 # db.py
@@ -731,7 +732,7 @@ class Order(Base):
     price = Column(Integer)
     created_at = Column(DateTime, default=datetime.now)
 ```
-## 4. Tvorba objednávky
+## 5. Tvorba objednávky
 Nyní vytvoříme formulář na přidávání záznamů do naší databáze.
 ```python
 # pages/3order.py
@@ -832,7 +833,7 @@ def insert_order(n_clicks, item_type, region, price):
             html.P(f'Price: {price}')
         ])
 ```
-## 5. Statistiky objednávek
+## 6. Statistiky objednávek
 ```python
 # pages/4advancedapp.py
 
