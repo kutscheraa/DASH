@@ -535,7 +535,8 @@ def plot_data(value):
 
     return fig
 ```
-Celý kód `pages/1setup.py`
+  <summary>Celý kód `pages/1setup.py`</summary>
+  
 ```python
 # pages/1setup.py
 
@@ -601,6 +602,7 @@ def plot_data(value):
 
     return fig
 ```
+</details>
 ## 3. Druhá aplikace
 Teď si vytvoříme jednoduchou aplikaci, která bude v reálném čase ukazovat využítí RAM. V `📁pages` vytvoříme další soubor `2simpleapp.py`
 ```python
@@ -706,7 +708,6 @@ engine = create_engine('mysql+mysqlconnector://doadmin:AVNS_IbKFOzKgR7dClGtqzJX@
 Base = declarative_base()
 
 from models.order import Order
-from models.user import User
 
 # Create tables in the database if they don't exist
 Base.metadata.create_all(engine)
