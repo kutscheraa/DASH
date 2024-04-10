@@ -535,7 +535,7 @@ def plot_data(value):
 
     return fig
 ```
-  <summary>Celý kód `pages/1setup.py`</summary>
+  <summary>Celý kód</summary>`pages/1setup.py`
   
 ```python
 # pages/1setup.py
