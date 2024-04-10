@@ -604,6 +604,7 @@ def plot_data(value):
     return fig
 ```
 </details>
+
 ## 3. Druhá aplikace
 Teď si vytvoříme jednoduchou aplikaci, která bude v reálném čase ukazovat využítí RAM. V `📁pages` vytvoříme další soubor `2simpleapp.py`
 ```python
