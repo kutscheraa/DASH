@@ -256,7 +256,7 @@ my_linelayout = {
     'color' : '#3DED97'
 }
 ```
-V `assets/1setup.py` naimportujeme vytvořený `fig_layout` pomocí `from assets.fig_layout import my_figlayout, my_linelayout`
+
 ## 2. Vlastní styly
 V `📁assets` vytvoříme soubor `custom_style.css`
 ```css
@@ -405,7 +405,7 @@ input[type='password'] {
 
 ```
 ## 3. Callback
-
+V `assets/1setup.py` naimportujeme vytvořený `fig_layout` pomocí `from assets.fig_layout import my_figlayout, my_linelayout`.
 ```python
 # v pages/1setup.py
 
