@@ -620,7 +620,314 @@ class Order(Base):
     price = Column(Integer)
     created_at = Column(DateTime, default=datetime.now)
 ```
-## 2.1. Inicializace a app layout
+## 5. Objednávka
+```python
+# pages/3order.py
+
+import dash
+from dash import html, Input, Output, callback, dcc
+import dash_bootstrap_components as dbc
+from sqlalchemy.orm import sessionmaker
+from db import *
+
+dash.register_page(__name__, path='/order', name='3) Order', title='Order')
+
+# Rozhraní aplikace
+layout = dbc.Container([
+    dbc.Row([
+        dbc.Col([html.H3(['ORDER INSERT'])], width=12, className='row-titles')
+    ]),
+    dbc.Row([
+        dbc.Col(dbc.Label('Item-type:'), width=2),
+        dbc.Col(dcc.Dropdown(options = [
+    "Electronics",
+    "Clothing",
+    "Books",
+    "Home Appliances",
+    "Toys",
+    "Sports Equipment",
+    "Jewelry",
+    "Furniture",
+    "Tools",
+    "Food",
+    "Other"
+], id='item-type'), width=8),
+    ]),
+    dbc.Row([
+        dbc.Col(dbc.Label('Region:'), width=2),
+        dbc.Col(dcc.Dropdown(options = [
+    "Hlavní město Praha",
+    "Středočeský kraj",
+    "Jihočeský kraj",
+    "Plzeňský kraj",
+    "Karlovarský kraj",
+    "Ústecký kraj",
+    "Liberecký kraj",
+    "Královéhradecký kraj",
+    "Pardubický kraj",
+    "Kraj Vysočina",
+    "Jihomoravský kraj",
+    "Olomoucký kraj",
+    "Zlínský kraj",
+    "Moravskoslezský kraj"
+], id='region'), width=8),
+    ]),
+    dbc.Row([
+        dbc.Col(dbc.Label('Price:'), width=2),
+        dbc.Col(dcc.Dropdown(options=["100","200","300","400","500"], id='price'), width=8),
+    ]),
+    dbc.Row([
+        dbc.Col(html.Button('Confirm', id='submit-val', n_clicks=0, className='my-button'), width=3, style={'text-align':'left', 'margin':'5px 1px 1px 1px'}),
+        dbc.Col(html.Div(id='output-state'), width=9),
+    ]),
+], className='')
+
+# Callback pro vkládání nových objednávek do databáze
+@callback(
+    Output('output-state', 'children'),
+    [Input('submit-val', 'n_clicks')],
+    [dash.dependencies.State('item-type', 'value'),
+     dash.dependencies.State('region', 'value'),
+     dash.dependencies.State('price', 'value')]
+)
+def insert_order(n_clicks, item_type, region, price):
+    if n_clicks > 0:
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        new_order = Order(item_type=item_type, region=region, price=price)
+        session.add(new_order)
+        session.commit()
+        session.close()
+        return html.Div([
+            html.H3('New order inserted:'),
+            html.P(f'Item-type: {item_type}'),
+            html.P(f'Region: {region}'),
+            html.P(f'Price: {price}')
+        ])
+```
+```python
+# pages/4advancedapp.py
+
+import dash
+from dash import html, Input, Output, callback, dcc
+import dash_bootstrap_components as dbc
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objs as go
+import json
+from sqlalchemy.orm import sessionmaker
+from db import *
+
+dash.register_page(__name__, path='/advancedapp', name='4) Advanced app', title='Advancedapp')
+
+df = pd.DataFrame()
+
+from assets.fig_layout import my_figlayout, my_linelayout, my_figlayout2
+
+# Load geojson data
+with open('data/kraje.json', 'r', encoding='utf-8') as f:
+    geojson = json.load(f)
+
+# Define the app layout
+def set_layout():
+    # Read data from DB
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    all_orders = session.query(Order).all()
+    order_data = [{"id": order.id, "region": order.region, "item_type": order.item_type, "price": order.price, "created_at": order.created_at} for order in all_orders]
+    global df
+    df = pd.DataFrame(order_data)
+    session.close()
+    df['created_at'] = pd.to_datetime(df['created_at'])
+    return dbc.Container([
+    dbc.Row([
+        dbc.Col([
+            dbc.Label("Select Region:"),
+            dcc.Dropdown(
+                id='region-dropdown',
+                options=[{'label': region, 'value': region} for region in df['region'].dropna().unique()],
+                value=None
+            ),
+        ])
+    ], className='row-content'),
+
+    dbc.Row([
+        dbc.Col([], width=2),
+        dbc.Col([
+            dcc.Loading(
+                id='p1_1-loading',
+                type='circle',
+                children=dcc.Graph(id='geojson-map', className='my-graph', config={'scrollZoom': False})
+            )
+        ], width=8),
+        dbc.Col([], width=2)
+    ], className='row-content'),
+
+    dbc.Row([
+        dbc.Col([], width=2),
+        dbc.Col([
+            dcc.Loading(
+                id='p1_1-loading',
+                type='circle',
+                children=dcc.Graph(id='pie-percentage', className='my-graph')
+            )
+        ], width=8),
+        dbc.Col([], width=2)
+    ], className='row-content'),
+
+    dbc.Row([
+        dbc.Col([], width=2),
+        dbc.Col([
+            dcc.Loading(
+                id='p1_1-loading',
+                type='circle',
+                children=dcc.Graph(id='pie-types', className='my-graph')
+            )
+        ], width=8),
+        dbc.Col([], width=2)
+    ], className='row-content'),
+
+    dbc.Row([
+        dbc.Col([], width=2),
+        dbc.Col([
+            dcc.Loading(
+                id='p1_1-loading',
+                type='circle',
+                children=dcc.Graph(id='orders-per-day', className='my-graph')
+            )
+        ], width=8),
+        dbc.Col([], width=2)
+    ], className='row-content'),
+])
+layout = set_layout
+# Define callback to update orders per day chart
+@callback(
+    Output('orders-per-day', 'figure'),
+    [Input('region-dropdown', 'value')]
+)
+def update_orders_per_day(region):
+    if region:
+        data = df[df['region'] == region].groupby(df['created_at'].dt.date).size().reset_index(name='count')
+    else:
+        data = df.groupby(df['created_at'].dt.date).size().reset_index(name='count')
+
+    fig = go.Figure(data=[go.Bar(x=data['created_at'], y=data['count'])], layout=my_figlayout)
+    fig.update_layout(
+        title='Orders per day',
+        xaxis_title='Date',
+        yaxis_title='Number of orders'
+    )
+    fig.update_xaxes(
+        rangeslider_visible=True,
+        rangeselector=dict(
+            buttons=list([
+                dict(count=1, label="1d", step="day", stepmode="backward"),
+                dict(count=7, label="1w", step="day", stepmode="backward"),
+                dict(count=30, label="1m", step="day", stepmode="backward"),
+                dict(count=365, label="1y", step="day", stepmode="backward"),
+                dict(step="all")
+            ])
+        )
+    )
+    return fig
+
+# Define callback to update pie percentage chart
+@callback(
+    Output("pie-percentage", "figure"),
+    [Input('region-dropdown', 'value')]
+)
+def update_pie_percentage(region):
+    if region:
+        data = df[df['region'] == region].groupby('item_type').size().reset_index(name='count')
+    else:
+        data = df.groupby('item_type').size().reset_index(name='count')
+
+    fig = px.pie(data, 
+                values='count', 
+                names='item_type', 
+                hole=0.5,
+                color_discrete_sequence=px.colors.sequential.RdBu
+                )
+    
+    fig.layout = my_figlayout
+    fig.update_traces(textinfo='percent+label')  # percentage + description
+    fig.update_layout(title='Orders by item type')  # title
+    return fig
+
+# Define callback to update pie types chart
+@callback(
+    Output("pie-types", "figure"),
+    [Input('region-dropdown', 'value')]
+)
+def update_pie_types(region):
+    if region:
+        data = df[df['region'] == region].groupby('item_type')['price'].sum().reset_index()
+    else:
+        data = df.groupby('item_type')['price'].sum().reset_index()
+
+    fig = px.pie(data, 
+                values='price', 
+                names='item_type', 
+                hole=0.5, 
+                color_discrete_sequence=px.colors.sequential.RdBu
+                )
+    
+    fig.layout = my_figlayout
+    fig.update_traces(textinfo='percent+label')
+    fig.update_layout(title='Final sum per item-type (CZK)')
+    return fig
+
+
+# Define callback to update the map
+@callback(
+    Output('geojson-map', 'figure'),
+    [Input('region-dropdown', 'value')]
+)
+def update_map(region):
+    if region:
+        data = df[df['region'] == region].groupby('region').size().reset_index(name='count')
+    else:
+        data = df.groupby('region').size().reset_index(name='count')
+
+    fig = px.choropleth_mapbox(data, 
+                            geojson=geojson, 
+                            locations='region', 
+                            featureidkey="properties.name:cs", 
+                            color='count',
+                            labels={'count': 'orders'},
+                            mapbox_style="carto-positron",
+                            zoom=6.0, 
+                            center={"lat": 49.7437522, "lon": 15.3386356},
+                            )
+
+    fig.update_layout(my_figlayout2)
+    fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+
+    return fig
+
+# Define callback to update data based on region selection
+@callback(
+    Output('output-data', 'children'),
+    [Input('region-dropdown', 'value')]
+)
+def update_data(region):
+    if region:
+        data = df[df['region'] == region]
+        if data.empty:
+            return html.P("No data available for selected region.")
+        else:
+            table_rows = [
+                html.Tr([html.Td(getattr(row, col)) for col in df.columns.keys()])
+                for row in data.to_dict('records')
+            ]
+            return html.Table([
+                html.Thead(html.Tr([html.Th(col) for col in df.columns.keys()])),
+                html.Tbody(table_rows)
+            ])
+    else:
+        return html.P("Select a region to view data.")
+
+```
 Naimportujeme si vše potřebné jako je psutil (system info - ram), datetime, dash, plotly.
 Z modulu collections importujeme deque (obousměrná fronta) pro ukládání hodnot využití RAM, to nám zajistí plynulý pohyb grafu.
 
