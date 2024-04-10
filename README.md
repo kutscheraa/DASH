@@ -595,6 +595,7 @@ def plot_data(value):
 
     return fig
 ```
+## 2. Druhá aplikace
 Teď si vytvoříme jednoduchou aplikaci, která bude v reálném čase ukazovat využítí RAM. V `📁pages` vytvoříme další soubor `2simpleapp.py`
 ```python
 # pages/2simpleapp.py
@@ -609,16 +610,21 @@ from collections import deque
 
 dash.register_page(__name__, path='/simpleapp', name='2) Simple app', title='Simpleapp')
 
-# Assuming that the 'assets' directory is at the same level as your script
 from assets.fig_layout import my_figlayout, my_linelayout
-
-# Vytvoření fronty pro ukládání dat o využití RAM
+```
+Vytvoření fronty pro ukládání dat o využití RAM
+```python
 data_memory = deque(maxlen=50)
 data_time = deque(maxlen=50)
-
+```
+Vytvoříme kontejner s třemi řádky.
+- První řádek obsahuje záhlaví "LIVE RAM USAGE".
+- Druhý řádek obsahuje komponentu dcc.Interval, která vyvolává aktualizaci každých 1,5 sekundy.
+- Třetí řádek obsahuje prázdné sloupce na začátku a na konci s šířkou 2, a mezi nimi sloupec s načítáním (Loading) a grafem (Graph), který se aktualizuje v reálném čase.
+```python
 layout = dbc.Container(
     [
-            dbc.Row([
+        dbc.Row([
         dbc.Col([html.H3(['LIVE RAM USAGE'])], width=12, className='row-titles')
     ],
     className='row-content'
@@ -647,6 +653,14 @@ layout = dbc.Container(
     ]
 )
 ```
+Vytvoříme callback funkci, která bude spouštěna pomocí intervalového komponentu `interval-component`.
+
+- Nejprve se načtou data o využití paměti RAM.
+- Časová značka x se získá aktuálním časem, zatímco využití paměti y se získá pomocí knihovny psutil.
+- Tyto nové hodnoty se přidají do fronty (`data_memory` a `data_time`), aby bylo možné sledovat historii dat.
+- Poté se vytvoří nový graf pomocí knihovny Plotly. Do grafu se přidává nový bod s časovou značkou a využitím paměti.
+- Následně se graf aktualizuje, nastavuje se jeho layout a layout pro čáry.
+- Graf je nakonec vrácen a zobrazen v aplikaci.
 ```python
 # Callback pro aktualizaci grafu v reálném čase
 @callback(Output('live-update-graph', 'figure'),
