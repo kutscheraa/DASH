@@ -859,12 +859,17 @@ dash.register_page(__name__, path='/advancedapp', name='4) Advanced app', title=
 df = pd.DataFrame()
 
 from assets.fig_layout import my_figlayout, my_linelayout, my_figlayout2
-
-# Load geojson data
+```
+Dále načteme do proměnné `geojson` data z jsonu. Tento soubor obsahuje souřadnice hranic krajů ČR. Pokud by vás zajímalo jak tyto lze interpretovat na internetu lze nalézt několik webaplikací, které umožňují data zobrazit. Například [zde](https://geojson.io/).
+```python
 with open('data/kraje.json', 'r', encoding='utf-8') as f:
     geojson = json.load(f)
+```
+Jak již jsem předtím zmiňoval aplikace Dash ve výchozím nastavení ukládají rozvržení `app.layout` do paměti. Tím je zajištěno, že se rozložení vypočítá pouze jednou, při spuštění aplikace.
+Avšak pokud nastavíte `app.layout` na funkci, budou data regenerovány při každém načtení stránky.
 
-# Define the app layout
+**Pozor!** Musíte napsat `app.layout = serve_layout`, nikoli `app.layout = serve_layout()`. To znamená, že definujte `app.layout` na skutečnou instanci funkce.
+```python
 def set_layout():
     # Read data from DB
     Session = sessionmaker(bind=engine)
@@ -875,6 +880,26 @@ def set_layout():
     df = pd.DataFrame(order_data)
     session.close()
     df['created_at'] = pd.to_datetime(df['created_at'])
+```
+**Samostatná práce**: nyní je na vás doplnit html elementy a vrátit je jako`return dbc.Container([...])`
+
+**Co chceme vytvořit**:
+Container bude obsahovat 5 řádků, u každého nastavte `className='row-content'`
+
+1. 
+    - `dbc.Label` s textem "Select region:"
+    - `dcc.Dropdown` parametr options musí být `dict`, 'label', 'value' bude unikátní region z dataframu, parametr `value` nastavte na None
+    - dropdowny můžete nalézt v layoutu předchozí kapitole
+2. 
+    - čtyři další řádky budou obsahovat grafy
+    - jak se vytváří naleznete v layoutu aplikace s RAM
+    - nastavte id takto 1. id='geojson-map', 2. id='pie-percentage', 3. id='pie-types', 4. id='orders-per-day'
+
+**Řešení:**
+<details>
+  <summary>zde</summary>
+
+```python
     return dbc.Container([
     dbc.Row([
         dbc.Col([
@@ -935,7 +960,17 @@ def set_layout():
         dbc.Col([], width=2)
     ], className='row-content'),
 ])
+```
+</details>
+
+Nastavíme layout
+```python
 layout = set_layout
+```
+Poslední co nám zbývá je nadefinovat callbacky. 
+
+První uděláme funkci na aktualizování grafu frekvence objednávek za den.
+```python
 # Define callback to update orders per day chart
 @callback(
     Output('orders-per-day', 'figure'),
@@ -966,7 +1001,9 @@ def update_orders_per_day(region):
         )
     )
     return fig
-
+```
+Další funkci pro koláčový graf, který bude zobrazovat procento zastoupení `item_type` v celkovém počtu.
+```python
 # Define callback to update pie percentage chart
 @callback(
     Output("pie-percentage", "figure"),
@@ -989,7 +1026,9 @@ def update_pie_percentage(region):
     fig.update_traces(textinfo='percent+label')  # percentage + description
     fig.update_layout(title='Orders by item type')  # title
     return fig
-
+```
+Další funkci pro koláčový graf, který bude zobrazovat procento zastoupení `item_type` podle ceny.
+```python
 # Define callback to update pie types chart
 @callback(
     Output("pie-types", "figure"),
@@ -1012,8 +1051,9 @@ def update_pie_types(region):
     fig.update_traces(textinfo='percent+label')
     fig.update_layout(title='Final sum per item-type (CZK)')
     return fig
-
-
+```
+Callback funkce pro mapu
+```python
 # Define callback to update the map
 @callback(
     Output('geojson-map', 'figure'),
@@ -1040,7 +1080,9 @@ def update_map(region):
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
 
     return fig
-
+```
+A poslední pro aktualizaci dat podle zvoleného regionu.
+```python
 # Define callback to update data based on region selection
 @callback(
     Output('output-data', 'children'),
