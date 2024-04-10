@@ -5,7 +5,7 @@
 1. [Test aplikace](#test-aplikace)
 2. [Vlastní styly](#vlastni-styly)
 
-## 0. Intro
+## 0 Intro
 Aby jsi se v projektu lépe vyznal, je lepší znát základní koncepty.
 Každá naše aplikace má vyhrazenou svou page, na které je základem layout. Layout je tvořen z několika komponent, které se skládají dohromady.
 
@@ -39,9 +39,8 @@ Pro vysvětlení si vezmeme layout aplikace **1setup**
 
 
 V **layoutu** je definováno, že se jedná o **Container**, který obsahuje několik řádků **dbc.Row**. Každý řádek obsahuje několik sloupců **dbc.Col**. V tomto případě je layout rozdělen na 3 řádky. **První řádek** obsahuje nadpis **html.H3**, **druhý řádek** obsahuje vstupní data = výstup (zobrazujeme čísté csv a nijak ho needitujeme). Třetí dbc.Row obsahuje dcc.Loading, který je zde pro zobrazení loadingu, když se načítají data. **dcc.Loading** má definované id, type a children. **ID** je unikátní identifikátor, **type** je typ loadingu a **children** je komponenta, která se má zobrazit (**dcc.Graph**). Každý sloupec **dbc.Col** má definovanou šířku (width) a třídu (className). **ClassName** používáme pro dodatečné stylování (protože bootstrap...).
-**V případě záseku je ideální použít [bootstrap docs](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/), nebo [dash docs](https://dash.plotly.com/dash-core-components).**
 
-Po layoutu vždy definujeme callback a ten si teď vysvětlíme.
+**Po layoutu vždy definujeme callback** a ten si teď vysvětlíme.
 **Callback** je definovaná funkce v rámci aplikace, která se spouští interakcí uživatele. Uživatel například klikne na button a tím spustí python funkci.
 
 Pro vysvětlení si vezmeme callback aplikace **1setup**
@@ -67,8 +66,17 @@ V outputu je definováno, že se jedná o **figure** a vstup je **radio-dataset*
     
         return fig
 
-V této funkci je definováno několik věcí. **Global data** definují data, která se budou zobrazovat.
-Dále vytváříme prázdný graf **fig = go.Figure(layout=my_figlayout)**, který má definovaný layout. Přidáváme do grafu **trace** (data) a nakonfigurujeme layout. Nakonec vrátíme graf.
+V této funkci je definováno několik věcí. **Global data** definují data, která se budou zobrazovat. 
+**Data** samotná jsou z externího csv filu:
+
+    data_csv  =  data  =  pd.read_csv('https://raw.githubusercontent.com/RDeconomist/observatory/main/Bitcoin%20Price.csv')
+ V souboru jsou sloupce Currency, Date, Closing Price (USD), 24h Open (USD), 24h High (USD), 24h Low (USD).
+ My z nich pracujeme pouze s **Date** a **24h High (USD)**, která extrahujeme takto:
+
+    fig.add_trace(go.Scatter(x=data['Date'], y=data['24h High (USD)'], line=dict()))
+
+Dále vytváříme prázdný graf **fig = go.Figure(layout=my_figlayout)**, který má definovaný layout. Přidáváme do grafu **trace** (data - už popsáno výše) a nakonfigurujeme layout. Nakonec vrátíme graf.
+**V případě záseku je ideální použít [bootstrap docs](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/), nebo [dash docs](https://dash.plotly.com/dash-core-components).**
 
 ## 1. Setup
 Naklonuj si repozitář a nainstaluj vše potřebné.
