@@ -565,7 +565,61 @@ def update_graph_live(n):
 
     return fig
 ```
-Na aplikaci si vysvětlíme jak funguje dash **layout** a **callback**.
+## 4. Databáze
+```python
+# db.py
+
+from sqlalchemy import create_engine, func
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
+
+# Create the SQLAlchemy engine
+engine = create_engine('mysql+mysqlconnector://doadmin:AVNS_IbKFOzKgR7dClGtqzJX@db-mysql-gui-do-user-14112159-0.c.db.ondigitalocean.com:25060/defaultdb')
+
+# Create a base class for declarative class definitions
+Base = declarative_base()
+
+from models.order import Order
+from models.user import User
+
+# Create tables in the database if they don't exist
+Base.metadata.create_all(engine)
+```
+```python
+# models/user.py
+
+from db import Base
+from sqlalchemy import Column, String, Integer
+
+class User(Base):
+    __tablename__ = 'users'
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String(30), nullable=False)
+    password = Column(String(30), nullable=False)
+
+    def __repr__(self):
+        return '<User %r>' % self.username
+```
+```python
+# models/order.py
+
+import dash
+from dash import html
+from db import Base
+from sqlalchemy import Column, String, Integer, DateTime
+from datetime import datetime
+
+# Define your data model
+class Order(Base):
+    __tablename__ = 'orders'
+    id = Column(Integer, primary_key=True)
+    region = Column(String(30))
+    item_type = Column(String(30))
+    price = Column(Integer)
+    created_at = Column(DateTime, default=datetime.now)
+```
 ## 2.1. Inicializace a app layout
 Naimportujeme si vše potřebné jako je psutil (system info - ram), datetime, dash, plotly.
 Z modulu collections importujeme deque (obousměrná fronta) pro ukládání hodnot využití RAM, to nám zajistí plynulý pohyb grafu.
