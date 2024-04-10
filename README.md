@@ -6,7 +6,7 @@
 2. [Vlastní styly](#vlastni-styly)
 
 ## 0. Intro
-Aby jsi se v projektu lépe vyznal, je lepší znát základní kocepty.
+Aby jsi se v projektu lépe vyznal, je lepší znát základní koncepty.
 Každá naše aplikace má vyhrazenou svou page, na které je základem layout. Layout je tvořen z několika komponent, které se skládají dohromady.
 
 Pro vysvětlení si vezmeme layout aplikace **1setup**
