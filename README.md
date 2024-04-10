@@ -190,6 +190,9 @@ _footer = html.Div([
 ], className = 'footer')
 ```
 Naimportujeme námi vytvořené komponenty do `app.py` a přidáme do layoutu. Celý kód vypadá takto.
+<details>
+  <summary>KOMPLETNÍ KOD</summary>
+  
 ```python
 # app.py
 
@@ -234,6 +237,7 @@ if __name__ == '__main__':
 	app.run_server(debug=True)
 
 ```
+</details>
 ## 2.2. Stránky
 Vytvoříme v kořenovém adresáři ještě jeden adresář `📁pages` a v něm soubor `1setup.py`.
 
