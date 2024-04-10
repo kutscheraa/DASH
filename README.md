@@ -1,42 +1,48 @@
 # Data dashboards in Dash
-**Obsah:**
-# Table of Contents
+# Obsah
 
-1. [Test aplikace](#test-aplikace)
-2. [Vlastní styly](#vlastni-styly)
+0. [Intro](#)
+1. [Hello world!](#)
+    1. [Komponenty](#)
+    2. [Stránka](#)
+    3. [Vlastní styly](#)
+    4. [Callback](#)
+2. [Druhá aplikace](#)
+3. [Připojení databáze](#)
+4. [...](#)
 
 ## 0 Intro
 Aby jsi se v projektu lépe vyznal, je lepší znát základní koncepty.
 Každá naše aplikace má vyhrazenou svou page, na které je základem layout. Layout je tvořen z několika komponent, které se skládají dohromady.
 
 Pro vysvětlení si vezmeme layout aplikace **1setup**
+```python
+layout = dbc.Container([
+    # title
+    dbc.Row([
+        dbc.Col([html.H3(['BTC VALUE HISTORY'])], width=12, className='row-titles')
+    ]),
 
-    layout = dbc.Container([
-        # title
-        dbc.Row([
-            dbc.Col([html.H3(['BTC VALUE HISTORY'])], width=12, className='row-titles')
-        ]),
-    
-        # data input
-        dbc.Row([
-            dbc.Col([], width = 3),
-            dbc.Col([html.P(['Select a dataset:'], className='par')], width=2),
-            dbc.Col([
-                dcc.RadioItems(id='radio-dataset', options=['BTC'], value = 'BTC', persistence=True, persistence_type='session')
-            ], width=4),
-            dbc.Col([], width = 3)
-        ], className='row-content'),
-    
-        # raw data fig
-        dbc.Row([
-            dbc.Col([], width = 2),
-            dbc.Col([
-                dcc.Loading(id='p1_1-loading', type='circle', children=dcc.Graph(id='fig-pg1', className='my-graph'))
-            ], width = 8),
-            dbc.Col([], width = 2)
-        ], className='row-content')
-    ])
+    # data input
+    dbc.Row([
+        dbc.Col([], width = 3),
+        dbc.Col([html.P(['Select a dataset:'], className='par')], width=2),
+        dbc.Col([
+            dcc.RadioItems(id='radio-dataset', options=['BTC'], value = 'BTC', persistence=True, persistence_type='session')
+        ], width=4),
+        dbc.Col([], width = 3)
+    ], className='row-content'),
 
+    # raw data fig
+    dbc.Row([
+        dbc.Col([], width = 2),
+        dbc.Col([
+            dcc.Loading(id='p1_1-loading', type='circle', children=dcc.Graph(id='fig-pg1', className='my-graph'))
+        ], width = 8),
+        dbc.Col([], width = 2)
+    ], className='row-content')
+])
+```
 
 V **layoutu** je definováno, že se jedná o **Container**, který obsahuje několik řádků **dbc.Row**. Každý řádek obsahuje několik sloupců **dbc.Col**. V tomto případě je layout rozdělen na 3 řádky. **První řádek** obsahuje nadpis **html.H3**, **druhý řádek** obsahuje vstupní data = výstup (zobrazujeme čísté csv a nijak ho needitujeme). Třetí dbc.Row obsahuje dcc.Loading, který je zde pro zobrazení loadingu, když se načítají data. **dcc.Loading** má definované id, type a children. **ID** je unikátní identifikátor, **type** je typ loadingu a **children** je komponenta, která se má zobrazit (**dcc.Graph**). Každý sloupec **dbc.Col** má definovanou šířku (width) a třídu (className). **ClassName** používáme pro dodatečné stylování (protože bootstrap...).
 
@@ -44,49 +50,47 @@ V **layoutu** je definováno, že se jedná o **Container**, který obsahuje ně
 **Callback** je definovaná funkce v rámci aplikace, která se spouští interakcí uživatele. Uživatel například klikne na button a tím spustí python funkci.
 
 Pro vysvětlení si vezmeme callback aplikace **1setup**
-
-    @callback(
-    Output(component_id='fig-pg1', component_property='figure'),
-    Input(component_id='radio-dataset', component_property='BTC')
-    )
-
+```python
+@callback(
+Output(component_id='fig-pg1', component_property='figure'),
+Input(component_id='radio-dataset', component_property='BTC')
+)
+```
 V outputu je definováno, že se jedná o **figure** a vstup je **radio-dataset**. Vstup je definován jako **BTC**, což je hodnota z **dcc.RadioItems**. Výstupem je **figure**, který je definován v layoutu.
 
 **Po callbacku vždy následuje definování funkce, která se spustí při interakci uživatele.**
+```python
+def plot_data(value):
+    fig = None
+    global data
 
-    def plot_data(value):
-        fig = None
-        global data
-    
-        fig = go.Figure(layout=my_figlayout)
-        fig.add_trace(go.Scatter(x=data['Date'], y=data['24h High (USD)'], line=dict()))
-    
-        fig.update_layout(xaxis_title='Date', yaxis_title='24h High (USD)', height = 500)
-        fig.update_traces(overwrite=True, line=my_linelayout)
-    
-        return fig
-
-V této funkci je definováno několik věcí. **Global data** definují data, která se budou zobrazovat. 
-**Data** samotná jsou z externího csv filu:
-
-    data_csv  =  data  =  pd.read_csv('https://raw.githubusercontent.com/RDeconomist/observatory/main/Bitcoin%20Price.csv')
- V souboru jsou sloupce Currency, Date, Closing Price (USD), 24h Open (USD), 24h High (USD), 24h Low (USD).
- My z nich pracujeme pouze s **Date** a **24h High (USD)**, která extrahujeme takto:
-
+    fig = go.Figure(layout=my_figlayout)
     fig.add_trace(go.Scatter(x=data['Date'], y=data['24h High (USD)'], line=dict()))
 
+    fig.update_layout(xaxis_title='Date', yaxis_title='24h High (USD)', height = 500)
+    fig.update_traces(overwrite=True, line=my_linelayout)
+
+    return fig
+```
+V této funkci je definováno několik věcí. **Global data** definují data, která se budou zobrazovat. 
+**Data** samotná jsou z externího csv filu:
+```python
+data_csv  =  data  =  pd.read_csv('https://raw.githubusercontent.com/RDeconomist/observatory/main/Bitcoin%20Price.csv')
+```
+ V souboru jsou sloupce Currency, Date, Closing Price (USD), 24h Open (USD), 24h High (USD), 24h Low (USD).
+ My z nich pracujeme pouze s **Date** a **24h High (USD)**, která extrahujeme takto:
+```python
+fig.add_trace(go.Scatter(x=data['Date'], y=data['24h High (USD)'], line=dict()))
+```
 Dále vytváříme prázdný graf **fig = go.Figure(layout=my_figlayout)**, který má definovaný layout. Přidáváme do grafu **trace** (data - už popsáno výše) a nakonfigurujeme layout. Nakonec vrátíme graf.
 **V případě záseku je ideální použít [bootstrap docs](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/), nebo [dash docs](https://dash.plotly.com/dash-core-components).**
 
 ## 1. Setup
 Naklonuj si repozitář a nainstaluj vše potřebné.
 
-*Společně s dashem se ti nainstaluje i grafická knihovna **plotly**.
-Dash aplikace pracují s **flaskem**, proto je tu command i pro flask.*
-
 První si naklonujeme repozitář, pak vytvoříme virtuální prostředí.
 
-```python    
+```bash   
 git clone https://github.com/kutscheraa/DASH
 cd DASH
 py -m venv venv
@@ -94,14 +98,14 @@ py -m venv venv
 
 Aktivace a instalace potřebných knihoven. Doporučujeme použít Command Prompt místo PowerShell, který občas vyhodí chybu při spouštění scriptu.
 
-```python   
+```bash
 ./venv/Scripts/activate
 py -m pip install -r requirements.txt
 
 python app.py
 ``` 
 
-## 1. Test aplikace
+## 2. Hello world
 Otestuj instalaci spuštěním `app.py`.
 
 ```python
@@ -127,7 +131,12 @@ app.layout = dbc.Container([
 if __name__ == '__main__':
 	app.run_server(debug=True)
 ```
-Dále vytvoříme `📁assets` v kořenovém adresáři a `assets/nav.py`. Kde vytvoříme menu a hlavičku pro naší aplikaci.
+## 2.1. Komponenty
+Jak jsme již bylo zmíněno. Stránky jsou složeny z jednotlivých komponent, které ve finále tvoří stránku. My si teď dvě takové vytvoříme - header a footer.
+
+Vytvoříme `📁assets` v kořenovém adresáři a `assets/nav.py`. Kde vytvoříme menu a hlavičku pro naší aplikaci. 
+
+V hlavním containeru budou dva řádky, v tom prvním vytvoříme `dbc.Div` element s logem a v tom druhém bude samotná navigace `dbc.Nav`.
 ```python
 # assets/nav.py
 
@@ -151,7 +160,7 @@ _nav = dbc.Container([
     ])
 ])
 ```
-V `📁assets` vytvoříme soubor `footer.py`. Zde umístíme informace, které chceme aby byli zobrazeny dole na stránce jako footer.
+A v `📁assets` vytvoříme druhý soubor `footer.py`. Zde umístíme informace, které chceme, aby byli zobrazeny dole na stránce jako footer.
 ```python
 # assets/footer.py
 
@@ -178,7 +187,7 @@ _footer = html.Div([
     ], fluid=True)
 ], className = 'footer')
 ```
-Naimportujeme námi vytvořené komponenty do `app.py` a přidáme do layoutu.
+Naimportujeme námi vytvořené komponenty do `app.py` a přidáme do layoutu. Celý kód vypadá takto.
 ```python
 # app.py
 
@@ -223,7 +232,15 @@ if __name__ == '__main__':
 	app.run_server(debug=True)
 
 ```
-Vytvoříme v kořenovém adresáři ještě jeden adresář `📁pages` a v něm soubor `1setup.py`
+## 2.1. Komponenty
+Vytvoříme v kořenovém adresáři ještě jeden adresář `📁pages` a v něm soubor `1setup.py`.
+
+Každou jednotlivou stránku je nutné zaregistrovat `dash.register_page`. A nastavit parametry: 
+- *path* = cílový endpoint
+- *name* = název
+- *title* = titulek
+
+Pomocí `pandas` načteme csv z URL a vytvoříme dataframe. Se kterým dále pracujeme. Pozor však na živá data. Pokud je definujeme před layoutem jsou načtena pouze jednou a to při startu aplikace. Jak udělat, aby byla načteny při každém refreshnutí stránky, si ukážeme později.
 ```python
 # pages/1setup.py
 
