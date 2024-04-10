@@ -67,7 +67,7 @@ V outputu je definováno, že se jedná o **figure** a vstup je **radio-dataset*
     
         return fig
 
-V této funkci je definováno několik věcí. **Global data** definují data, která se budou zobrazovat. Global používáme protože se data mění a chceme je mít stále updatované, funkce graf updatuje periodicky. Dále vytváříme prázdný graf **fig = go.Figure(layout=my_figlayout)**, který má definovaný layout. Přidáváme do grafu **trace** (data) a nakonfigurujeme layout. Nakonec vrátíme graf.
+V této funkci je definováno několik věcí. **Global data** definují data, která se budou zobrazovat. Dále vytváříme prázdný graf **fig = go.Figure(layout=my_figlayout)**, který má definovaný layout. Přidáváme do grafu **trace** (data) a nakonfigurujeme layout. Nakonec vrátíme graf.
 
 ## 1. Setup
 Naklonuj si repozitář a nainstaluj vše potřebné.
