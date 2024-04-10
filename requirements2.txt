@@ -1,0 +1,9 @@
+dash
+Flask
+pandas
+psutil
+Flask-SQLAlchemy
+SQLAlchemy
+dash-bootstrap-components
+mysql-connector-python
+dash-auth
