@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 # from db import *
 
-app = Dash(__name__, use_pages=False, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME],
+app = Dash(__name__, use_pages=True, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME],
 	   suppress_callback_exceptions=True, prevent_initial_callbacks=True)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 server = app.server

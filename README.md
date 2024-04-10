@@ -149,7 +149,282 @@ if __name__ == '__main__':
 	app.run_server(debug=True)
 
 ```
-## 2. Jednoduchá aplikace
+Vytvoříme v kořenovém adresáři ještě jeden adresář `📁pages` a v něm soubor `1setup.py`
+```python
+# pages/1setup.py
+
+import dash
+from dash import html, dcc, callback, Input, Output
+import dash_bootstrap_components as dbc
+import pandas as pd
+import plotly.graph_objects as go
+
+dash.register_page(__name__, path='/', name='1) Setup', title='Setupapp')
+
+# Load the data
+data_csv = data = pd.read_csv('https://raw.githubusercontent.com/RDeconomist/observatory/main/Bitcoin%20Price.csv')
+
+### PAGE LAYOUT ###############################################################################################################
+
+layout = dbc.Container([
+    # title
+    dbc.Row([
+        dbc.Col([html.H3(['BTC VALUE HISTORY'])], width=12, className='row-titles')
+    ]),
+
+    # data input
+    dbc.Row([
+        dbc.Col([], width = 3),
+        dbc.Col([html.P(['Select a dataset:'], className='par')], width=2),
+        dbc.Col([
+            dcc.RadioItems(id='radio-dataset', options=['BTC'], value = 'BTC', persistence=True, persistence_type='session')
+        ], width=4),
+        dbc.Col([], width = 3)
+    ], className='row-content'),
+
+    # raw data fig
+    dbc.Row([
+        dbc.Col([], width = 2),
+        dbc.Col([
+            dcc.Loading(id='p1_1-loading', type='circle', children=dcc.Graph(id='fig-pg1', className='my-graph'))
+        ], width = 8),
+        dbc.Col([], width = 2)
+    ], className='row-content')
+])
+```
+A v `app.py` přidáme parametr `use_pages=True`. Dále vytvoříme v `📁assets` další soubor `fig_layout.py`
+```python
+# assets/fig_layout.py
+
+import plotly.graph_objects as go
+
+###### FIG LAYOUT
+font_style = {
+    'color' : '#f6f6f6'
+}
+
+margin_style = {
+    'b': 10,
+    'l': 50,
+    'r': 8,
+    't': 50,
+    'pad': 0
+}
+
+xaxis_style = {
+    'linewidth' : 1,
+    'linecolor' : 'rgba(0, 0, 0, 0.35%)',
+    'showgrid' : False,
+    'zeroline' : False
+}
+
+yaxis_style = {
+    'linewidth' : 1,
+    'linecolor' : 'rgba(0, 0, 0, 0.35%)',
+    'showgrid' : True,
+    'gridwidth' : 1,
+    'gridcolor' : 'rgba(0, 0, 0, 0.11%)',
+    'zeroline' : False
+}
+
+###### FIG LAYOUT (for all components)
+my_figlayout = go.Layout(
+    paper_bgcolor='rgba(0,0,0,0)', # Figure background is controlled by css on dcc.Graph() components
+    plot_bgcolor='rgba(0,0,0,0)',
+    font = font_style,
+    margin = margin_style,
+    xaxis = xaxis_style,
+    yaxis = yaxis_style,
+    height = 300
+)
+
+###### FIG LAYOUT 2 (for map)
+my_figlayout2 = go.Layout(
+    paper_bgcolor='rgba(0,0,0,0)', # Figure background is controlled by css on dcc.Graph() components
+    plot_bgcolor='rgba(0,0,0,0)',
+    font = font_style,
+    margin = margin_style,
+    xaxis = xaxis_style,
+    yaxis = yaxis_style,
+    height = 400
+)
+
+
+###### TRACES LAYOUT (for line plots)
+my_linelayout = {
+    'width' : 3,
+    'color' : '#3DED97'
+}
+```
+V `assets/1setup.py` naimportujeme vytvořený `fig_layout` pomocí `from assets.fig_layout import my_figlayout, my_linelayout`
+## 2. Vlastní styly
+V `📁assets` vytvoříme soubor `custom_style.css`
+```css
+/* === ANY ELEMENT OVERRIDE ===*/
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    color: #f6f6f6 !important;
+}
+
+/* === BASE ===*/
+html,
+body {
+    height: 100vh;
+    background-image: linear-gradient(109.6deg, rgb(0, 0, 0) 11.2%, rgb(11, 132, 145) 91.1%);
+    overflow-x: hidden;
+    font-size: 18px;
+}
+
+/* === dcc.Graphh components ===*/
+.dash-graph.my-graph {
+    background-color: rgba(0,0,0,11.0%);
+    border-radius: 25px;
+}
+
+/* === NAV ===*/
+.logo {
+    padding: 23px 1px 1px 1px;
+    text-align: center;
+    vertical-align: middle;
+    text-shadow: 0px 0px 50px #4be9fa;
+}
+
+.app-brand {
+    font-size: 35px;
+    font-weight: 200;
+    text-shadow: 0px 0px 50px #4be9fa;
+}
+
+.my-nav {
+    font-size: 18px !important;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #042f33;
+}
+
+/* === FOOTER ===*/
+.hr-footer {
+    height: 5px;
+}
+
+.footer {
+    font-size: 15px;
+}
+
+
+.guide {
+    text-align: left;
+    font-size: 16px;
+    font-weight: 100; 
+}
+
+.row-content {
+    margin: 20px 0px 20px 0px;
+    justify-content: space-between;
+}
+
+.par {
+    text-align: center;
+}
+
+input[type='radio'] {
+    accent-color: #042f33;
+    margin: 5px 5px 5px 5px;
+}
+
+input:hover {
+    box-shadow: 0 0 10px #3DED97;
+}
+
+input[type='text'] {
+    size: 50px;
+    border-radius: 25px;
+    border: solid 1px #3DED97;
+    accent-color: #042f33;
+    background-color: #042f33;
+    padding: 12px 20px;
+    margin: 5px 0;
+    position: relative;
+    left: -75%;
+}
+
+input[type='password'] {
+    border-radius: 25px;
+    border: solid 1px #3DED97;
+    accent-color: #042f33;
+    background-color: #042f33;
+    padding: 12px 20px;
+    margin: 5px 0;
+    position: relative;
+    left: -75%;
+}
+
+.row-titles {
+    padding: 10px 0px 20px 0px;
+    text-align: center;
+    text-decoration: solid;
+}
+
+.dash-dropdown {
+    margin: 5px 0px 5px 0px;
+}
+/* === BUTTON ===*/
+.my-button {
+    background-color: #042f33;
+    border: solid 1px #3DED97;
+    border-radius: 25px;
+    padding: 10px 20px 10px 20px;
+    font-size: 18px;
+    margin: 0px;
+    box-shadow: 0 0 5px #042f33;
+}
+
+.my-button:hover {
+    box-shadow: 0 0 10px #3DED97;
+}
+
+.my-button:active {
+    box-shadow: 0 0 10px #3DED97;
+  }
+
+/* === MAP DROPDOWN ===*/
+.Select-control, .Select-menu-outer {
+    background-color: #042f33 !important;
+    border-width: 1px;
+    border-color: #042f33 !important;
+  }
+
+/* === LOADING ===*/
+.dash-sk-circle .dash-sk-child:before {
+    background-color: #3DED97 !important;
+    box-shadow: 0 0 20px #3DED97 !important;
+}
+
+```
+## 3. Callback
+
+```python
+# v pages/1setup.py
+
+@callback(
+    Output(component_id='fig-pg1', component_property='figure'),
+    Input(component_id='radio-dataset', component_property='BTC')
+)
+def plot_data(value):
+    fig = None
+    global data
+
+    fig = go.Figure(layout=my_figlayout)
+    fig.add_trace(go.Scatter(x=data['Date'], y=data['24h High (USD)'], line=dict()))
+
+    fig.update_layout(xaxis_title='Date', yaxis_title='24h High (USD)', height = 500)
+    fig.update_traces(overwrite=True, line=my_linelayout)
+
+    return fig
+```
 Teď si vytvoříme jednoduchou aplikaci, která bude v reálném čase ukazovat využítí RAM.
 Na aplikaci si vysvětlíme jak funguje dash **layout** a **callback**.
 ## 2.1. Inicializace a app layout

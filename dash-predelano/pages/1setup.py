@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.graph_objects as go
 
-dash.register_page(__name__, path='/setup', name='1) Setup', title='Setupapp')
+dash.register_page(__name__, path='/', name='1) Setup', title='Setupapp')
 
 # Assuming that the 'assets' directory is at the same level as your script
 from assets.fig_layout import my_figlayout, my_linelayout
