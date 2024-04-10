@@ -4,6 +4,71 @@
 
 1. [Test aplikace](#test-aplikace)
 2. [Vlastní styly](#vlastni-styly)
+
+## 0. Intro
+Aby jsi se v projektu lépe vyznal, je lepší znát základní kocepty.
+Každá naše aplikace má vyhrazenou svou page, na které je základem layout. Layout je tvořen z několika komponent, které se skládají dohromady.
+
+Pro vysvětlení si vezmeme layout aplikace **1setup**
+
+    layout = dbc.Container([
+        # title
+        dbc.Row([
+            dbc.Col([html.H3(['BTC VALUE HISTORY'])], width=12, className='row-titles')
+        ]),
+    
+        # data input
+        dbc.Row([
+            dbc.Col([], width = 3),
+            dbc.Col([html.P(['Select a dataset:'], className='par')], width=2),
+            dbc.Col([
+                dcc.RadioItems(id='radio-dataset', options=['BTC'], value = 'BTC', persistence=True, persistence_type='session')
+            ], width=4),
+            dbc.Col([], width = 3)
+        ], className='row-content'),
+    
+        # raw data fig
+        dbc.Row([
+            dbc.Col([], width = 2),
+            dbc.Col([
+                dcc.Loading(id='p1_1-loading', type='circle', children=dcc.Graph(id='fig-pg1', className='my-graph'))
+            ], width = 8),
+            dbc.Col([], width = 2)
+        ], className='row-content')
+    ])
+
+
+V **layoutu** je definováno, že se jedná o **Container**, který obsahuje několik řádků **dbc.Row**. Každý řádek obsahuje několik sloupců **dbc.Col**. V tomto případě je layout rozdělen na 3 řádky. **První řádek** obsahuje nadpis **html.H3**, **druhý řádek** obsahuje vstupní data = výstup (zobrazujeme čísté csv a nijak ho needitujeme). Třetí dbc.Row obsahuje dcc.Loading, který je zde pro zobrazení loadingu, když se načítají data. **dcc.Loading** má definované id, type a children. **ID** je unikátní identifikátor, **type** je typ loadingu a **children** je komponenta, která se má zobrazit (**dcc.Graph**). Každý sloupec **dbc.Col** má definovanou šířku (width) a třídu (className). **ClassName** používáme pro dodatečné stylování (protože bootstrap...).
+**V případě záseku je ideální použít [bootstrap docs](https://dash-bootstrap-components.opensource.faculty.ai/docs/components/), nebo [dash docs](https://dash.plotly.com/dash-core-components).**
+
+Po layoutu vždy definujeme callback a ten si teď vysvětlíme.
+**Callback** je definovaná funkce v rámci aplikace, která se spouští interakcí uživatele. Uživatel například klikne na button a tím spustí python funkci.
+
+Pro vysvětlení si vezmeme callback aplikace **1setup**
+
+    @callback(
+    Output(component_id='fig-pg1', component_property='figure'),
+    Input(component_id='radio-dataset', component_property='BTC')
+    )
+
+V outputu je definováno, že se jedná o **figure** a vstup je **radio-dataset**. Vstup je definován jako **BTC**, což je hodnota z **dcc.RadioItems**. Výstupem je **figure**, který je definován v layoutu.
+
+**Po callbacku vždy následuje definování funkce, která se spustí při interakci uživatele.**
+
+    def plot_data(value):
+        fig = None
+        global data
+    
+        fig = go.Figure(layout=my_figlayout)
+        fig.add_trace(go.Scatter(x=data['Date'], y=data['24h High (USD)'], line=dict()))
+    
+        fig.update_layout(xaxis_title='Date', yaxis_title='24h High (USD)', height = 500)
+        fig.update_traces(overwrite=True, line=my_linelayout)
+    
+        return fig
+
+V této funkci je definováno několik věcí. **Global data** definují data, která se budou zobrazovat. Global používáme protože se data mění a chceme je mít stále updatované, funkce graf updatuje periodicky. Dále vytváříme prázdný graf **fig = go.Figure(layout=my_figlayout)**, který má definovaný layout. Přidáváme do grafu **trace** (data) a nakonfigurujeme layout. Nakonec vrátíme graf.
+
 ## 1. Setup
 Naklonuj si repozitář a nainstaluj vše potřebné.
 
