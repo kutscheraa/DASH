@@ -16,6 +16,7 @@ Dash aplikace pracují s **flaskem**, proto je tu command i pro flask.*
     python -m venv venv
     Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
     ./venv/Scripts/activate
+    python -m pip install -r requirements.txt
     pip install dash, flask, pandas, psutil
     
     
