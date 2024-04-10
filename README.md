@@ -31,6 +31,124 @@ Otestuj instalaci spuštěním test appky.
 
     cd setup
     python app1.py
+
+```python
+# app.py
+
+from dash import Dash, dcc
+import dash_bootstrap_components as dbc
+import dash
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+app = Dash(__name__, 
+        external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME],
+	    suppress_callback_exceptions=True, prevent_initial_callbacks=True)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+
+server = app.server
+
+app.layout = dbc.Container([
+	"Hello world!"
+], fluid=True)
+
+if __name__ == '__main__':
+	app.run_server(debug=True)
+```
+```python
+# assets/nav.py
+
+from dash import html
+import dash_bootstrap_components as dbc
+import dash
+
+_nav = dbc.Container([
+	dbc.Row([
+        dbc.Col([
+            html.Div([
+                html.I(className="fa-solid fa-chart-simple fa-2x")],
+		    className='logo')
+        ], width = 4),
+        dbc.Col([html.H1(['JELÍNEK KUČERA'], className='app-header')], width = 8)
+	]),
+	dbc.Row([
+        dbc.Nav(
+	        [dbc.NavLink(page["name"], active='exact', href=page["path"]) for page in dash.page_registry.values()],
+	        vertical=True, pills=True, class_name='my-nav')
+    ])
+])
+```
+```python
+# assets/footer.py
+
+from dash import html
+import dash_bootstrap_components as dbc
+
+_footer = html.Div([
+    dbc.Container([
+        dbc.Row([
+            dbc.Col([html.Hr([], className = 'hr-footer')], width = 12)
+        ]),
+        dbc.Row([
+	        dbc.Col([], width = 1),
+            dbc.Col(['Created with Plotly Dash'], width = 3),
+            dbc.Col([], width =6),
+	        dbc.Col([
+                html.Ul([
+                    html.Li([
+                        html.A([ html.I(className="fa-brands fa-github me-3 fa-1x")], href='https://github.com/kutscheraa/DASH'),
+                    ])
+                ], className='list-unstyled d-flex justify-content-center justify-content-md-start')
+            ], width = 2)
+        ])
+    ], fluid=True)
+], className = 'footer')
+```
+```python
+# app.py
+
+from dash import Dash, dcc
+import dash_bootstrap_components as dbc
+import dash
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+# from db import *
+
+app = Dash(__name__, use_pages=True, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME],
+	   suppress_callback_exceptions=True, prevent_initial_callbacks=True)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
+server = app.server
+
+############################################################################################
+# Import shared components
+
+from assets.footer import _footer
+from assets.nav import _nav
+
+############################################################################################
+# App Layout
+app.layout = dbc.Container([
+	dbc.Row([
+        dbc.Col([_nav], width = 2),
+        dbc.Col([
+            dbc.Row([dash.page_container])
+	    ], width = 10),
+    ]),
+    dbc.Row([
+        dbc.Col([], width = 2),
+        dbc.Col([
+            dbc.Row([_footer])
+	    ], width = 10),
+    ]),
+    dcc.Store(id='browser-memo', data=dict(), storage_type='session')
+], fluid=True)
+
+############################################################################################
+# Run App
+if __name__ == '__main__':
+	app.run_server(debug=True)
+
+```
 ## 2. Jednoduchá aplikace
 Teď si vytvoříme jednoduchou aplikaci, která bude v reálném čase ukazovat využítí RAM.
 Na aplikaci si vysvětlíme jak funguje dash **layout** a **callback**.
