@@ -3,7 +3,7 @@ Flask==3.0.2
 pandas==2.2.1
 psutil==5.9.8
 Flask-SQLAlchemy==3.1.1
-SQLAlchemy
+SQLAlchemy==2.0.29
 dash-bootstrap-components
 mysql-connector-python==8.3.0
-dash_auth
+dash-auth==2.3.0
