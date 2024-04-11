@@ -371,6 +371,7 @@ Celý kód `custom_style.css`
 
 <details>
   <summary>ZDE</summary>
+
 ```css
 /* === ANY ELEMENT OVERRIDE ===*/
 * {
@@ -516,6 +517,7 @@ input[type='password'] {
 }
 ```
 </details>
+
 
 V `assets/1setup.py` první naimportujeme vytvořený `fig_layout` pomocí `from assets.fig_layout import my_figlayout, my_linelayout`.
 ## 2.4. Callback
