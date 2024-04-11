@@ -189,9 +189,11 @@ _footer = html.Div([
     ], fluid=True)
 ], className = 'footer')
 ```
-Naimportujeme námi vytvořené komponenty do `app.py` a přidáme do layoutu. Celý kód vypadá takto:
+Naimportujeme námi vytvořené komponenty do `app.py` a přidáme do layoutu.
+
+Celý kód `app.py`
 <details>
-  <summary>KOMPLETNÍ KOD</summary>
+  <summary>ZDE</summary>
   
 ```python
 # app.py
@@ -293,7 +295,7 @@ layout = dbc.Container([
 A v `app.py` přidáme parametr instanci dashe `use_pages=True`. 
 
 Jako poslední krok vytvoříme v `📁assets` soubor `fig_layout.py`, který bude obsahovat defaultní stylování a layout pro naše grafy.
-Celý kod `fig_layout.py`
+Celý kód `fig_layout.py`
 <details>
   <summary>ZDE</summary>
 ```python
@@ -367,7 +369,8 @@ Do složky assets můžete vkládat soubory CSS a JavaScript. Dash automaticky o
 
 
 V `📁assets` tedy vytvoříme soubor `custom_style.css`
-Celý kod `custom_style.css`
+Celý kód `custom_style.css`
+
 <details>
   <summary>ZDE</summary>
 ```css
@@ -513,7 +516,6 @@ input[type='password'] {
     background-color: #3DED97 !important;
     box-shadow: 0 0 20px #3DED97 !important;
 }
-
 ```
 </details>
 
