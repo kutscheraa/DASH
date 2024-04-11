@@ -371,7 +371,6 @@ Do složky assets můžete vkládat soubory CSS a JavaScript. Dash automaticky o
 
 V `📁assets` tedy vytvoříme soubor `custom_style.css`
 Celý kód `custom_style.css`
-
 <details>
   <summary>ZDE</summary>
 ```css
