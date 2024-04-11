@@ -296,9 +296,8 @@ A v `app.py` přidáme parametr instanci dashe `use_pages=True`.
 
 Jako poslední krok vytvoříme v `📁assets` soubor `fig_layout.py`, který bude obsahovat defaultní stylování a layout pro naše grafy.
 
-Celý kód `fig_layout.py`
-<details>
-  <summary>ZDE</summary>
+Celý kód `fig_layout.py`:
+
 ```
 # assets/fig_layout.py
 
@@ -362,15 +361,14 @@ my_linelayout = {
     'color' : '#3DED97'
 }
 ```
-</details>
 
 ## 2.3. Vlastní styly
 Dash podporuje přidávání vlastních CSS nebo JavaScript do vašich aplikací.
 Do složky assets můžete vkládat soubory CSS a JavaScript. Dash automaticky obsluhuje všechny soubory, které jsou v této složce obsaženy. Ve výchozím nastavení je adresa URL  `📁assets`, ale můžete si ji přizpůsobit pomocí argumentu `assets_url_path` v instanci `dash.Dash`.
 
-
 V `📁assets` tedy vytvoříme soubor `custom_style.css`
 Celý kód `custom_style.css`
+
 <details>
   <summary>ZDE</summary>
 ```css
