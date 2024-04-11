@@ -238,6 +238,7 @@ if __name__ == '__main__':
 
 ```
 </details>
+
 ## 2.2. Stránky
 Vytvoříme v kořenovém adresáři ještě jeden adresář `📁pages` a v něm soubor `1setup.py`.
 
@@ -292,6 +293,9 @@ layout = dbc.Container([
 A v `app.py` přidáme parametr instanci dashe `use_pages=True`. 
 
 Jako poslední krok vytvoříme v `📁assets` soubor `fig_layout.py`, který bude obsahovat defaultní stylování a layout pro naše grafy.
+Celý kod `fig_layout.py`
+<details>
+  <summary>ZDE</summary>
 ```python
 # assets/fig_layout.py
 
@@ -355,6 +359,7 @@ my_linelayout = {
     'color' : '#3DED97'
 }
 ```
+</details>
 
 ## 2.3. Vlastní styly
 Dash podporuje přidávání vlastních CSS nebo JavaScript do vašich aplikací.
@@ -362,6 +367,9 @@ Do složky assets můžete vkládat soubory CSS a JavaScript. Dash automaticky o
 
 
 V `📁assets` tedy vytvoříme soubor `custom_style.css`
+Celý kod `custom_style.css`
+<details>
+  <summary>ZDE</summary>
 ```css
 /* === ANY ELEMENT OVERRIDE ===*/
 * {
@@ -507,6 +515,8 @@ input[type='password'] {
 }
 
 ```
+</details>
+
 V `assets/1setup.py` první naimportujeme vytvořený `fig_layout` pomocí `from assets.fig_layout import my_figlayout, my_linelayout`.
 ## 2.4. Callback
 Poslední částí co nám zbývá k správné funkčnosti aplikace je callback.
@@ -535,8 +545,9 @@ def plot_data(value):
 
     return fig
 ```
+Celý kod `pages/1setup.py`
 <details>
-  <summary>Celý kód pages/1setup.py</summary>
+  <summary>ZDE</summary>
   
 ```python
 # pages/1setup.py
@@ -897,7 +908,7 @@ Container bude obsahovat 5 řádků, u každého nastavte `className='row-conten
 
 **Řešení:**
 <details>
-  <summary>zde</summary>
+  <summary>ZDE</summary>
 
 ```python
     return dbc.Container([
@@ -1106,7 +1117,7 @@ def update_data(region):
         return html.P("Select a region to view data.")
 
 ```
-Celý soubor `pages/4advancedapp.py`
+Celý kod `pages/4advancedapp.py`
 <details>
     <summary>ZDE</summary>
 
