@@ -295,10 +295,11 @@ layout = dbc.Container([
 A v `app.py` přidáme parametr instanci dashe `use_pages=True`. 
 
 Jako poslední krok vytvoříme v `📁assets` soubor `fig_layout.py`, který bude obsahovat defaultní stylování a layout pro naše grafy.
+
 Celý kód `fig_layout.py`
 <details>
   <summary>ZDE</summary>
-```python
+```
 # assets/fig_layout.py
 
 import plotly.graph_objects as go
@@ -547,7 +548,7 @@ def plot_data(value):
 
     return fig
 ```
-Celý kod `pages/1setup.py`
+Celý kód `pages/1setup.py`
 <details>
   <summary>ZDE</summary>
   
